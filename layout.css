@@ -1,5 +1,6 @@
 body {
     margin-top: 0px;
+    background-color: white;
 }
 
 #wrapper {
@@ -29,6 +30,9 @@ body {
     padding-top: 20px;
 }
 
+#uploadBtn {
+    margin-top: 20px;
+}
 #progressBar {
     position: relative;
     width: 60%;
@@ -36,6 +40,7 @@ body {
     align-content: center;
     background-color: #ddd;
     margin: 0 auto;
+    margin-top: 20px;
 }
 
 #progress {
