@@ -42,24 +42,28 @@
 </head>
 
 <body>
-    <div id="header">
-        <h1>MUN Platform</h1>
-        <h4>The official MUN Platform website</h4>
-    </div>
-    
-    <div id="content">
-        <input type="file" id="fileChooser" onchange="file_chosen()"/>
-        
-        <div id="progressBar">
-            <div id="progress">
-                <div id="progressLabel">0%</div>
+  <div id="wrapper" class="card">
+        <div id="header">
+            <h1>MUN Platform</h1>
+            <h4>The official MUN Platform website</h4>
+        </div>
+
+        <div id="content">
+            <input type="file" id="fileChooser" onchange="file_chosen()"/>
+
+            <div id="progressBar">
+                <div id="progress">
+                    <div id="progressLabel">0%</div>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <div id="footer">
-        <div class="customHr">.</div>
-        Copyright © Dimitris Peppas, Andreas Tsouchlos 2016 (Profanos kai olo auto tha allaxei, apla ekana layout ta basika div-tags pou iparxoun panta  (header, content, footer))
+
+        <div id="footer">
+            <hr>
+            Copyright © Dimitris Peppas, Andreas Tsouchlos 2016
+            <br>
+            (Profanos kai olo auto tha allaxei, apla ekana layout ta basika div-tags pou iparxoun panta  (wrapper, header, content, footer), kai ipa na dokimaso na balo card (shadow opos sto android))
+        </div>
     </div>
 </body>
 </html>
