@@ -2,8 +2,10 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="layout.css">
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    
     <title>MUN Platform</title>
+    
     <script>
         function file_chosen() {
             var progressBar = document.getElementById("progressBar");
@@ -18,11 +20,11 @@
             function frame() {
                 if (width >= 100) {
                     clearInterval(id);
-                    alert(document.getElementById("fileChooser").value)
+                    alert(document.getElementById("fileChooser").value);
                 } else {
                     width++; 
                     progress.style.width = width + '%'; 
-                    document.getElementById("progressLabel").innerHTML = width*1 + '%';
+                    document.getElementById("progressLabel").innerHTML = width + '%';
                 }
             }
         }
@@ -40,13 +42,15 @@
 </head>
 
 <body>
-    <div id="content">
+    <div id="header">
         <h1>MUN Platform</h1>
-        <h4>Copyright Dimitris Peppas, Andreas Tsouchlos 2016 (Profanos kai auto to text, opos kai olo to UI, tha allaxei)</h4>
-        
-        <br>
-        <br>
-        
+        <h4>The official MUN Platform website</h4>
+    </div>
+
+    <br>
+    <br>
+    
+    <div id="content">
         <input type="file" id="fileChooser" onchange="file_chosen()"/>
         
         <br>
@@ -57,6 +61,11 @@
                 <div id="progressLabel">0%</div>
             </div>
         </div>
+    </div>
+    
+    <div id="footer">
+        <div class="customHr">.</div>
+        Copyright © Dimitris Peppas, Andreas Tsouchlos 2016 (Profanos kai olo auto tha allaxei, apla ekana layout ta basika div-tags pou iparxoun panta  (header, content, footer))
     </div>
 </body>
 </html>
