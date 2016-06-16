@@ -1,0 +1,32 @@
+body {
+    margin-top: 0px;;
+}
+
+#content {
+    position: absolute;
+    text-align: center;
+    width: 60%;
+    height: 1200px;
+    left: 20%;
+    background-color: #42A5F5;
+}
+
+#progressBar {
+    position: relative;
+    width: 60%;
+    height: 30px;
+    align-content: center;
+    background-color: #ddd;
+    margin: 0 auto;
+}
+
+#progress {
+    position: absolute;
+    width: 1%;
+    height: 100%;
+    background-color: #0D47A1; 
+}
+
+#progressLabel {
+    color: white;
+}

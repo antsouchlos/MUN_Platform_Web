@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="layout.css">
+    <meta charset="UTF-8">
+    <title>MUN Platform</title>
+    <script>
+        function file_chosen() {
+            var progressBar = document.getElementById("progressBar");
+            var progress = document.getElementById("progress");
+            
+            progressBar.style.visibility="visible";
+            progress.style.visibility="visible";
+            
+            var width = 1;
+            var id = setInterval(frame, 10);
+            
+            function frame() {
+                if (width >= 100) {
+                    clearInterval(id);
+                    alert(document.getElementById("fileChooser").value)
+                } else {
+                    width++; 
+                    progress.style.width = width + '%'; 
+                    document.getElementById("progressLabel").innerHTML = width*1 + '%';
+                }
+            }
+        }
+        
+        function init() {
+            var progressBar = document.getElementById("progressBar");
+            var progress = document.getElementById("progress");
+            
+            progressBar.style.visibility="hidden";
+            progress.style.visibility="hidden"; 
+        }
+        
+        window.onload = init;
+    </script>
+</head>
+
+<body>
+    <div id="content">
+        <h1>MUN Platform</h1>
+        <h4>Copyright Dimitris Peppas, Andreas Tsouchlos 2016 (Profanos kai auto to text, opos kai olo to UI, tha allaxei)</h4>
+        
+        <br>
+        <br>
+        
+        <input type="file" id="fileChooser" onchange="file_chosen()"/>
+        
+        <br>
+        <br>
+        
+        <div id="progressBar">
+            <div id="progress">
+                <div id="progressLabel">0%</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
