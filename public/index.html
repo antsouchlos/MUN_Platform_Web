@@ -3,6 +3,19 @@
     <head>
         <link rel="stylesheet" type="text/css" href="layout.css">
         <title>MUN Platform</title>
+        
+        <script>
+            function login() {
+                var username = document.getElementById("username_text").value;
+                var password = document.getElementById("password_text").value;
+                
+                if(username=="user" && password=="123") {
+                    alert("Welcome friend!");
+                } else {
+                    alert("GET LOST YOU SCUM");
+                }
+            }
+        </script>
     </head>
     
     <body>
@@ -14,10 +27,10 @@
 
             <div id="content">
                 Username: 
-                <input type="text" id="username_text" name="username">
+                <input type="text" id="username_text">
                 <br>
                 Password: 
-                <input type="text" id="password_text" name="password">
+                <input type="text" id="password_text">
                 <br>
                 <input type="submit" value="Log in" onclick="login()">
             </div>
