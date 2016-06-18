@@ -1,14 +1,96 @@
+/*Set different sizes if the browser's width is greater than 1500px*/
+@media only screen and (min-width: 1500px) {
+    #wrapper {
+        position: absolute;
+        text-align: center;
+        width: 50%;
+        left: 25%;
+        height: 1150px;
+    }
+    
+    #footer {
+        position: absolute;
+        text-align: center;
+        top: 1050px;
+        width: 100%;
+        height: 100px;
+        background-color: #42A5F5;
+        padding-top: 20px;
+        color: white;
+    }
+}
+
+
+/*Set different sizes if the browser's width is greater than 1000px but less than 1500px*/
+@media all and (min-width: 1000px) and (max-width: 1500px) {
+        #wrapper {
+        position: absolute;
+        text-align: center;
+        width: 60%;
+        left: 20%;
+        height: 1160px;
+    }
+    
+    #footer {
+        position: absolute;
+        text-align: center;
+        top: 1050px;
+        width: 100%;
+        height: 110px;
+        background-color: #42A5F5;
+        padding-top: 20px;
+        color: white;
+    }
+}
+
+/*Set different sizes if the browser's width is greater than 500px but less than  1000px*/
+@media all and (min-width: 500px) and (max-width: 1000px) {
+        #wrapper {
+        position: absolute;
+        text-align: center;
+        width: 70%;
+        left: 15%;
+        height: 1180px;
+    }
+    
+    #footer {
+        position: absolute;
+        text-align: center;
+        top: 1050px;
+        width: 100%;
+        height: 130px;
+        background-color: #42A5F5;
+        padding-top: 20px;
+        color: white;
+    }
+    
+}
+
+/*Set different sizes if the browser's width is less than  500px*/
+@media all and (max-width: 500px) {
+        #wrapper {
+        position: absolute;
+        text-align: center;
+        width: 80%;
+        left: 10%;
+        height: 1200px;
+    }
+    
+    #footer {
+        position: absolute;
+        text-align: center;
+        top: 1050px;
+        width: 100%;
+        height: 150px;
+        background-color: #42A5F5;
+        padding-top: 20px;
+        color: white;
+    }
+}
+
 body {
     margin-top: 0px;
     background-color: white;
-}
-
-#wrapper {
-    position: absolute;
-    text-align: center;
-    width: 50%;
-    left: 25%;
-    height: 1150px;
 }
 
 #header {
@@ -33,6 +115,7 @@ body {
 #uploadBtn {
     margin-top: 20px;
 }
+
 #progressBar {
     position: relative;
     width: 60%;
@@ -51,17 +134,6 @@ body {
 }
 
 #progressLabel {
-    color: white;
-}
-
-#footer {
-    position: absolute;
-    text-align: center;
-    top: 1050px;
-    width: 100%;
-    height: 100px;
-    background-color: #42A5F5;
-    padding-top: 20px;
     color: white;
 }
 
