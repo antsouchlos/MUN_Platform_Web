@@ -2,6 +2,7 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="layout.css">
+        <title>MUN Platform</title>
     </head>
     
     <body>
@@ -12,13 +13,15 @@
             </div>
 
             <div id="content">
-                Username: 
-                <input type="text" id="username_text">
-                <br>
-                Password: 
-                <input type="text" id="password_text">
-                <br>
-                <button id="loginBtn">Log in</button>
+                <form action="login.php" method="post">
+                    Username: 
+                    <input type="text" id="username_text" name="username">
+                    <br>
+                    Password: 
+                    <input type="text" id="password_text" name="password">
+                    <br>
+                    <input type="submit" value="Log in">
+                </form>
             </div>
 
             <div id="footer">
