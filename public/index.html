@@ -5,16 +5,26 @@
         <title>MUN Platform</title>
         
         <script>
+            function init () {
+                document.getElementById("wrong_cred").style.visibility = "hidden";    
+            }
+            
             function login() {
                 var username = document.getElementById("username_text").value;
                 var password = document.getElementById("password_text").value;
                 
                 if(username=="user" && password=="123") {
-                    alert("Welcome friend!");
+                    document.location.href = "upload.html";
                 } else {
-                    alert("GET LOST YOU SCUM");
+                    document.getElementById("wrong_cred").style.visibility = "visible";
                 }
             }
+            
+            function changeFocus() {
+                document.getElementById("password_text").focus();
+            }
+            
+            window.onload = init;
         </script>
     </head>
     
@@ -27,12 +37,18 @@
 
             <div id="content">
                 Username: 
-                <input type="text" id="username_text">
+                <input type="text" id="username_text" onkeydown="if (event.keyCode == 13) changeFocus();">
                 <br>
                 Password: 
+<<<<<<< HEAD
+                <input type="text" id="password_text" onkeydown="if (event.keyCode == 13) login();">
+=======
                 <input type="password" id="password_text">
+>>>>>>> f56ff69c06d9dd4a24573dc94c448bf396758680
                 <br>
                 <input type="submit" value="Log in" onclick="login()">
+                <br>
+                <div id="wrong_cred">Wrong username or password</div>
             </div>
 
             <div id="footer">
