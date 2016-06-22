@@ -18,33 +18,29 @@
             };
             firebase.initializeApp(config);
         </script>
-
-
-        <script src="upload.js"></script>
+        
+        <script src="resView.js"></script>
     </head>
-
+    
     <body>
-      <div id="wrapper" class="card">
+        <div id="wrapper" class="card">
             <div id="header">
                 <h1>MUN Platform</h1>
                 <h4>The official MUN Platform website</h4>
             </div>
 
             <div id="content">
-                <input type="file" id="fileChooser"/>
+                <select id="resList" size="20"></select>
+                
                 <br>
-                <button id="uploadBtn" onclick="upload()">Upload file</button>
-
-                <div id="progressBar">
-                    <div id="progress">
-                        <div id="progressLabel">0%</div>
-                    </div>
-                </div>
+                <br>
+                
+                <input type="button" id="downloadBtn" onclick="download()" value="Download" />
             </div>
 
             <div id="footer">
                 <hr>
-                Created Dimitris Peppas, Andreas Tsouchlos 2016
+                Created by Dimitris Peppas, Andreas Tsouchlos 2016
             </div>
         </div>
     </body>

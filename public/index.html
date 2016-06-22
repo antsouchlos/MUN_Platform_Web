@@ -13,8 +13,10 @@
                 var username = document.getElementById("username_text").value;
                 var password = document.getElementById("password_text").value;
                 
-                if(username=="user" && password=="123") {
+                if(username=="upload" && password=="123") {
                     document.location.href = "upload.html";
+                } else if (username=="view" && password=="234") {
+                    document.location.href = "resView.html";
                 } else {
                     document.getElementById("wrong_cred").style.visibility = "visible";
                 }

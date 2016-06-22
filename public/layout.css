@@ -141,6 +141,10 @@ body {
     color: red;
 }
 
+#resList {
+    width: 50%;
+}
+
 div.card {
     box-shadow: 0 20px 20px 0 rgba(0,0,0,0.4),0 30px 60px 0 rgba(0,0,0,0.22)!important;
 }
