@@ -7,13 +7,17 @@ function getName(path) {
 function upload() {
     if (document.getElementById("fileChooser").value == "") {
         alert("You must choose a file to upload");
+    } else if (document.getElementById("resName").value == "") {
+        alert("You must choose a name for your resolution");
     } else {
         //set up the firebase references
         var path = document.getElementById("fileChooser").value;
         
-        var rootRef = firebase.storage.ref();
-        var fileRef = rootRef.child(getName(path));
-        
+        /*var rootRef = firebase.storage.ref();
+        var fileRef = rootRef.child(document.getElementById("resName").value);
+        */
+        alert(path);
+        /*
         //upload the file
         var uploadTask = fileRef.put(path);
         
@@ -26,27 +30,29 @@ function upload() {
         
         //handle the file upload
         uploadTask.on('state_changed', function (snapshot) {
-            /*handle events*/
+            //handle events
             
             var progress = (snapshot.bytesTransfered / snapshot.totalBytes) * 100;
             progress.style.width = progress + '%';
             document.getElementById("progressLabel").innerHTML = progress + '%';
             
         }, function(error) {
-            /*handle errors*/
+            //handle errors
             
             alert("An error occurred while uploading the file");
             
         }, function() {
-            /*handle successful uploads*/
+            //handle successful uploads
             
-        });
+        });*/
         
 
     }
 }
 
 function init() {
+    //hide the progressbar
+    
     var progressBar = document.getElementById("progressBar");
     var progress = document.getElementById("progress");
 
