@@ -1,0 +1,240 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Chair Activity</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header" class="alt">
+						<h1>Student Officer</h1>
+						<p>committee var</p>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul>
+							<li><a href="#upload" class="active">Upload</a></li>
+							<li><a href="#status">Resolution Status</a></li>
+							<li><a href="#debate">Debate Result</a></li>
+							<li><a href="#contact">Contact Us</a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Introduction -->
+							<section id="upload" class="main">
+								<div class="spotlight">
+									<div class="content">
+										<header class="major">
+											<h2>Upload Resolution</h2>
+										</header>
+										<p> Enter the name of the resolution and pick the topic. Then click on the search button 
+											and find the text document. Click on Upload and wait until it's uploaded succesfully.
+											At the end send the CO-Submitter Sign Up Sheet to the Draft Panel. WARNING: Without
+											it the resolution will not get the D-Number. 
+										</p>
+										<div class="row uniform">
+											<div class="12u$">
+												<div class="select-wrapper">
+													<select name="demo-category" id="demo-category">
+														<option value="">- Topic -</option>
+														<option value="1">topic 1</option>
+														<option value="1">topic 2</option>
+														<option value="1">topic 3</option>
+														<option value="1">topic 4</option>
+													</select>
+												</div>
+											</div>
+											<div class="12u$">
+												<input type="text" name="demo-name" id="demo-name" value="" placeholder="Resolution Name" />
+											</div>
+											<div>
+												<input type="file" id="fileChooser" placeholder="Choose document">
+											</div>
+											<br>
+											<div>
+												<br>
+											<ul class="actions">
+												<li><a href="#" class="button icon fa-upload">Upload</a></li>
+											</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+							</section>
+
+						<!-- Status -->
+							<section id="status" class="main">
+								<header class="major">
+									<h2>Resolution Status</h2>
+								</header>
+								<p>Pick the resolution to check its status</p>
+								<div class="12u$">
+									<div class="select-wrapper">
+										<select name="demo-category" id="demo-category">
+											<option value="">- Topic/Name -</option>
+											<option value="1">topic/name 1</option>
+											<option value="1">topic/name 2</option>
+											<option value="1">topic/name 3</option>
+											<option value="1">topic/name 4</option>
+										</select>
+									</div>
+								</div>
+								<br>
+								<ul class="actions">
+									<li><a href="#" class="button special">Check</a></li>
+								</ul>
+								<div>
+									<br>
+									<h1>ID:</h1>
+								</div>
+									<h3>Name var</h3>
+									<div class="table-wrapper">
+										<table>
+											<thead>
+												<tr>
+													<th></th>
+													<th>Description</th>
+													<th>Status</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>Uploaded</td>
+													<td>The time that the resolution was uploaded</td>
+													<td>var</td>
+												</tr>
+												<tr>
+													<td>Archived</td>
+													<td>The time that the resolution got an ID</td>
+													<td>var</td>
+												</tr>
+												<tr>
+													<td>Aprooval Panel</td>
+													<td>The time that the delegate entered the Aprooval Panel</td>
+													<td>var</td>
+												</tr>
+												<tr>
+													<td>A-Number</td>
+													<td>The time that the resolution got an A-Number</td>
+													<td>var</td>
+												</tr>
+											</tbody>
+											<tfoot>
+												<tr>
+													<td>Debate Result</td>
+													<td colspan="1">
+													<td>var<td>
+										</table>
+									</div>
+							</section>
+
+						<!-- Debate result -->
+						<section id="debate" class="main">
+							<header class="major">
+								<h2>Debate result</h2>
+								<p>Please submit the result of the debate</p>
+							</header>
+							<div class="12u$">
+								<div class="select-wrapper">
+									<select name="demo-category" id="demo-category">
+										<option value="">- Topic/Name -</option>
+										<option value="1">topic/name 1</option>
+										<option value="1">topic/name 2</option>
+										<option value="1">topic/name 3</option>
+										<option value="1">topic/name 4</option>
+									</select>
+								</div>
+							</div>
+						<br>
+					<form method="post" action="#">
+						<div class="row uniform">
+							<div class="4u 12u$(small)">
+								<input type="radio" id="demo-priority-low" name="demo-priority" checked>
+								<label for="demo-priority-low">Passed</label>
+							</div>
+							<div class="4u 12u$(small)">
+								<input type="radio" id="demo-priority-normal" name="demo-priority">
+								<label for="demo-priority-normal">Failed</label>
+							</div>
+						</div>
+					</form>
+						<br>
+								<ul class="actions">
+									<li><a href="#" class="button special">Submit</a></li>
+								</ul>
+						</section>
+
+						<!-- Contact -->
+							<section id="contact" class="main special">
+								<header class="major">
+									<h2>Contact Us</h2>
+									<p>Please contact us if any problem occurs</p>
+								</header>
+								<footer class="major">
+									<ul class="actions">
+										<li><a href="contact.html" class="button">Contact Us</a></li>
+									</ul>
+								</footer>
+							</section>
+
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<section>
+							<h2>We need your help</h2>
+							<p>In order to provide you the best possible service we need your help. If any problem occurs please inform us immediently.
+								We will be pleased if you send us your feedback about this platform at the end of the conference.
+							</p>
+							<ul class="actions">
+								<li><a href="contact.html" class="button">Contact Us</a></li>
+							</ul>
+						</section>
+						<section>
+							<h2>German School of Athens</h2>
+							<dl class="alt">
+								<dt>Address</dt>
+								<dd>Dimokritou and Ziridi, Athens, Greece</dd>
+								<dt>Phone</dt>
+								<dd>(000) 000-0000 x 0000</dd>
+								<dt>Email</dt>
+								<dd><a href="#">information@untitled.tld</a></dd>
+							</dl>
+							<ul class="icons">
+								<li><a href="#" class="icon fa-twitter alt"><span class="label">Twitter</span></a></li>
+								<li><a href="#" class="icon fa-facebook alt"><span class="label">Facebook</span></a></li>
+								<li><a href="#" class="icon fa-instagram alt"><span class="label">Instagram</span></a></li>
+								<li><a href="#" class="icon fa-github alt"><span class="label">GitHub</span></a></li>
+								<li><a href="#" class="icon fa-dribbble alt"><span class="label">Dribbble</span></a></li>
+							</ul>
+						</section>
+						<p class="copyright">&copy; Dimitris Peppas Andreas Tsouchlos. All rights reserved.
+							 Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
