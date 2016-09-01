@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+        <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
         <script src="assets/js/site_specific/firebase_init.js"></script>
         <script src="assets/js/site_specific/login.js"></script>
 	</head>
@@ -23,7 +24,6 @@
 
 				<!-- Main -->
 					<div id="main">
-
 							<section id="content" class="main">
 
 								<!-- Form -->
@@ -31,23 +31,25 @@
 										<header class="major">
 											<h2>Form</h2>
 										</header>
-										<form method="post" action="#">
-											<div class="row uniform">
-												<div class="6u 12u$(xsmall)">
-													<input type="text" name="demo-name" id="demo-name" value="" placeholder="User Name" />
-												</div>
-												<div class="6u$ 12u$(xsmall)">
-													<input type="password" name="demo-email" id="demo-email" value="" placeholder="Password" />
-												</div>
-												<div class="12u$">
-													<ul class="actions">
-														<li><input type="submit" value="Log In" class="special" /></li>
-														<li><input type="reset" value="Reset" /></li>
-													</ul>
-												</div>
-											</div>
-										</form>
-									</section>
+                                        
+                                        <div class="row uniform">
+                                            <div class="6u 12u$(xsmall)">
+                                                <input type="text" id="email_text" value="" placeholder="Email" />
+                                            </div>
+                                            <div class="6u$ 12u$(xsmall)">
+                                                <input type="password" id="password_text" value="" placeholder="Password" />
+                                            </div>
+                                            <div class="12u$">
+                                                <ul class="actions">
+                                                    <li><input type="submit" value="Log In" class="special" onclick="login()"/></li>
+                                                    <li><input type="reset" value="Reset" onclick="reset()"/></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                        <h3 id="wrong_cred"><font color="red">Wrong password or username</font></h3>
+                                        
+                                    </section>
 							</section>
 					</div>
 
