@@ -1,6 +1,10 @@
-function init() {    
+function init() {
+    //hide the msg_text message
+    document.getElementById("msg_text").style.visibility = "hidden";
+    
     var fileChooser = document.getElementById("fileChooser");
     var resName = document.getElementById("resName");
+    var topicView = document.getElementById("topicView");
 
     var file = null;
     
@@ -13,13 +17,20 @@ function init() {
     //add listener to the "upload" button
     var upload_link = document.getElementById("upload_link");
     upload_link.onclick = function() {
+        //hide the successfule_text message
+        document.getElementById("msg_text").style.visibility = "hidden";
+        
         if (resName.value == "") {
             alert("You must choose a name for the resolution");
         } else if (file == null) {
             alert("You must choose a file to upload");
+        } else if (topicView.selectedIndex == -1 || topicView.options[topicView.selectedIndex].text == "- Topic -") {
+            alert("You must choose a topic");
         } else {
-            //create storage ref
-            var storageRef = firebase.storage().ref("resolutions/" + resName.value);
+            //Get the selected topic
+            var topic = topicView.options[topicView.selectedIndex].text;
+            
+            var storageRef = firebase.storage().ref("resolutions/" + topic + "/" + resName.value);
 
             //upload file
             var uploadTask = storageRef.put(file);
@@ -30,11 +41,13 @@ function init() {
                 function progress(snapshot) {},
 
                 function error(err) {
-                    alert("An error occurred while uploading file");
-                    alert(err.message);
+                    alert("An error occurred while uploading the file");
                 },
 
                 function complete() {
+                    //make the msg_text message visible
+                    document.getElementById("msg_text").style.visibility = "visible";
+                
                     //----add the resolution to the realtime database----
                     var rootRef = firebase.database().ref();
                     var counterRef = rootRef.child('counter');
@@ -52,7 +65,7 @@ function init() {
                             counter = parseInt(snapshot.val()) + 1;
 
                             //create the new resolution-reference
-                            var databaseRef = firebase.database().ref().child('resolutions').child(counter.toString());
+                            var databaseRef = firebase.database().ref().child('resolutions').child(topic).child(counter.toString());
 
                             //set the name of the new resolution
                             databaseRef.set(resName.value);
