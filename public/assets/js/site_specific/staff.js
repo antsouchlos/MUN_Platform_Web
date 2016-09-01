@@ -65,8 +65,8 @@ function removeChild(index) {
 
 function init() {
     //add listener to the "download" button
-    var a = document.getElementById("download_link");
-    a.onclick = function() {
+    var download_link = document.getElementById("download_link");
+    download_link.onclick = function() {
         download();
         return false;
     }
