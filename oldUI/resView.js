@@ -18,6 +18,12 @@ function getName(itemValue) {
 }
 
 function download() {
+    var a = document.getElementById("download_link");
+    a.onclick = function() {
+        download();
+        return false;
+    }
+    
     var list = document.getElementById("resList");
 
     //make sure something is selected
