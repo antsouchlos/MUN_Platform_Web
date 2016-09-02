@@ -132,10 +132,10 @@ function init() {
     
     const resolutionRef = firebase.database().ref().child('resolutions');
     
-    listen(resolutionRef.child("topic_1"), "topic_1");
-    listen(resolutionRef.child("topic_2"), "topic_2");
-    listen(resolutionRef.child("topic_3"), "topic_3");
-    listen(resolutionRef.child("topic_4"), "topic_4");
+    listen(resolutionRef.child("topic 1"), "topic 1");
+    listen(resolutionRef.child("topic 2"), "topic 2");
+    listen(resolutionRef.child("topic 3"), "topic 3");
+    listen(resolutionRef.child("topic 4"), "topic 4");
 }
 
 window.onload = init;
