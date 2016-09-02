@@ -94,7 +94,7 @@
 								</div>
 								<br>
 								<ul class="actions">
-									<li><a href="#" class="button special">Check</a></li>
+									<li><a href="#" class="button special" id="check_link">Check</a></li>
 								</ul>
 								<div>
 									<br>
@@ -114,29 +114,29 @@
 												<tr>
 													<td>Uploaded</td>
 													<td>The date and time that the resolution was uploaded</td>
-													<td>var</td>
+													<td id="uploaded_txt"></td>
 												</tr>
 												<tr>
 													<td>Archived</td>
 													<td>The date and time that the resolution got an ID</td>
-													<td>var</td>
+													<td id="archived_txt"></td>
 												</tr>
 												<tr>
 													<td>Aprooval Panel</td>
 													<td>The date and time that the delegate entered the Aprooval Panel</td>
-													<td>var</td>
+													<td id="aprooval_txt"></td>
 												</tr>
 												<tr>
 													<td>A-Number</td>
 													<td>The date and time that the resolution got an A-Number</td>
-													<td>var</td>
+													<td id="aNumber_txt"></td>
 												</tr>
 											</tbody>
 											<tfoot>
 												<tr>
 													<td>Debate Result</td>
 													<td colspan="1">
-                                                    <td>var</td>
+                                                    <td id="debate_txt"></td>
                                                 </tr>
                                             </tfoot>
 										</table>
@@ -155,23 +155,21 @@
 									</select>
 								</div>
 							</div>
-						<br>
-					<form method="post" action="#">
-						<div class="row uniform">
-							<div class="4u 12u$(small)">
-								<input type="radio" id="demo-priority-low" name="demo-priority" checked>
-								<label for="demo-priority-low">Passed</label>
+							<br>
+							<div class="row uniform">
+								<div class="4u 12u$(small)">
+									<input type="radio"checked id="debatePassed_radio">
+									<label for="demo-priority-low">Passed</label>
+								</div>
+								<div class="4u 12u$(small)">
+									<input type="radio" id="debateFailed_radio">
+									<label for="demo-priority-normal">Failed</label>
+								</div>
 							</div>
-							<div class="4u 12u$(small)">
-								<input type="radio" id="demo-priority-normal" name="demo-priority">
-								<label for="demo-priority-normal">Failed</label>
-							</div>
-						</div>
-					</form>
-						<br>
-								<ul class="actions">
-									<li><a href="#" class="button special">Submit</a></li>
-								</ul>
+							<br>
+							<ul class="actions">
+								<li><a href="#" class="button special" id="debateSubmit_link">Submit</a></li>
+							</ul>
 						</section>
 
 						<!-- Contact -->

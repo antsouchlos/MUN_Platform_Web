@@ -1,3 +1,55 @@
+//takes the value of a select-option (form: "Resolution [id]: [topic]/[name]") as an argument and return the id
+function getId(txt) {
+    var result = "";
+    
+   	var writing = false;
+    
+    for (i = 0; i < txt.length; i++) {
+        if (!writing) {
+            if (txt.charAt(i) == ' ')
+                writing = true;
+        } else {
+            if (txt.charAt(i) == ' ')
+                break;
+            else
+                result += txt.charAt(i);
+        }
+    }
+
+    return parseInt(result);
+}
+
+function uploadDateAndTime(id, type) {
+    var resolutionRef = firebase.database().ref().child("metadata").child(id.toString()).child(type);
+    
+    var currentDate = new Date();
+    var dateAndTime = "";
+    
+    var day = currentDate.getDay(); 
+    
+    //translate the day from a number to a string
+    if (day == 0) {
+        dateAndTime += "Sun, ";
+    } else if (day == 1) {
+        dateAndTime += "Mon, ";
+    } else if (day == 2) {
+        dateAndTime += "Tue, ";
+    } else if (day == 3) {
+        dateAndTime += "Wed, ";
+    } else if(day == 4) {
+        dateAndTime += "Thu, ";
+    } else if(day == 5) {
+        dateAndTime += "Fri, ";
+    } else {
+        dateAndTime += "Sat, ";
+    }
+    
+    //se the time
+    dateAndTime += currentDate.getHours() + ':' + currentDate.getMinutes() + ":" + currentDate.getSeconds();
+    
+    resolutionRef.child("dateAndTime").set(dateAndTime);
+}
+
 function addChild(name, id, listName) {
     var list = document.getElementById(listName);
     var item = document.createElement("option");
@@ -20,13 +72,14 @@ function removeChild(index, listName) {
 }
 
 //listen for changes to the children of "reference" and update "resList" accordingly
+//TODO: find another way of getting the resolutions
 function listen(reference, topic, listName) {
     //add an item to list when a child is added to the database
     reference.on('child_added', function(childSnapshot, prevChildKey) {
         if (prevChildKey == null)
             prevChildKey = "0";
 
-        addChild(topic + '/' + childSnapshot.val(), parseInt(prevChildKey) + 1, listName);
+        addChild(topic + '/' + childSnapshot.val(), parseInt(childSnapshot.key), listName);
     });
 
     //change an item's text when the value of the corresponding child is changed in the database
@@ -34,7 +87,7 @@ function listen(reference, topic, listName) {
         if (prevChildKey == null)
             prevChildKey = "0";
 
-        changeChild(topic + '/' + childSnapshot.val(), parseInt(prevChildKey), listName);
+        changeChild(topic + '/' + childSnapshot.val(), parseInt(childSnapshot.key) -1, listName);
     });
 
     //remove an item when the corresponding child is removed from the database
@@ -48,7 +101,7 @@ function init() {
     
     //set the title and subtitle of the site
     //TODO: set studen officers and remove this variable
-    studentOfficer = "[tbd] - Student officer";
+    var studentOfficer = "[tbd] - Student officer";
     
     var fired = false;
     firebase.auth().onAuthStateChanged(firebaseUser => {
@@ -143,7 +196,7 @@ function init() {
                         //make the msg_text message visible
                         document.getElementById("msg_text").style.visibility = "visible";
 
-                        //----add the resolution to the realtime database----
+                        //add the resolution to the realtime database
                         var rootRef = firebase.database().ref();
                         var counterRef = rootRef.child('counter');
 
@@ -164,6 +217,9 @@ function init() {
 
                                 //set the name of the new resolution
                                 databaseRef.set(resName.value);
+                                
+                                //add the resolution metadata to the realtime database
+                                uploadDateAndTime(counter, "uploaded");
 
                                 //update the counter
                                 counterRef.set(counter.toString());
@@ -179,6 +235,89 @@ function init() {
         //make sure the default link behaviour doesn't happen
         return false;
     }
+    
+    //add listener to the "check" button
+    document.getElementById("check_link").onclick = function() {
+        var resList = document.getElementById("resList");
+        
+        if (resList.selectedIndex != -1) {
+            var metaReference = firebase.database().ref().child("metadata").child(getId(resList.options[resList.selectedIndex].text));
+            
+            //read the data of "metadata" once to be able to see weather the children exist
+            metaReference.once("value", function(snapshot) {
+            	if (snapshot.hasChild("uploaded")) {
+		            var uploadedMeta = metaReference.child("uploaded");
+		            
+		            //set the date and time for the "uploaded" row in the "status" column
+		            uploadedMeta.child("dateAndTime").once("value", function(localSnapshot) {
+			            document.getElementById("uploaded_txt").innerHTML = localSnapshot.val();
+		            });
+            	}
+            	
+            	if (snapshot.hasChild("archived")) {
+		            var archivedMeta = metaReference.child("archived");
+		            
+		            //set the date and time for the "archived" row in the "status" column
+		            archivedMeta.child("dateAndTime").once("value", function(localSnapshot) {
+			            document.getElementById("archived_txt").innerHTML = localSnapshot.val();
+		            });
+            	}
+            	
+            	if (snapshot.hasChild("approoval")) {
+		            var approovalMeta = metaReference.child("approval");
+		            
+		            //set the date and time for the "approoval panel" row in the "status" column
+		            approovalMeta.child("dateAndTime").once("value", function(localSnapshot) {
+			            document.getElementById("approoval_txt").innerHTML = localSnapshot.val();
+		            });
+            	}
+            	
+            	if (snapshot.hasChild("aNumber")) {
+		            var aNumberMeta = metaReference.child("aNumber");
+		            
+		            //set the date and time for the "a-number" row in the "status" column
+		            aNumberMeta.child("dateAndTime").once("value", function(localSnapshot) {
+			            document.getElementById("aNumber_txt").innerHTML = localSnapshot.val();
+		            });
+            	}
+            	
+            	if (snapshot.hasChild("debate result")) {
+		            var debateMeta = metaReference.child("debate");
+		            
+		            //set the status of the "debate" row in the "status" column
+		            debateMeta.once("value", function(localSnapshot) {
+		            	document.getElementById("debate_txt").innerHTML = localSnapshot.val();
+		            });
+            	}
+            });
+
+        } else {
+            alert("You must choose a resolution to check");
+        }
+        
+        return false;
+    };
+    
+    //add listener to the "submit" button
+    document.getElementById("debateSubmit_link").onclick = function () {
+    	var debatePassed_radio = document.getElementById("debatePassed_radio");
+    	var resList2 = document.getElementById("resList2");
+    	
+    	//make sure an item is selected
+    	if (resList2.selectedIndex != -1) {
+	        var debateReference = firebase.database().ref().child("metadata").child(getId(resList2.options[resList2.selectedIndex].text)).child("debate");
+	    	
+	    	if (debatePassed_radio.checked == true) {
+	    		debateReference.set("passed");
+	    	} else {
+	    		debateReference.set("failed");
+	    	}
+    	} else {
+    		alert("You must choose a resolution to update its debate status");
+    	}
+    	
+    	return false;
+    };
 }
 
 window.onload = init;
