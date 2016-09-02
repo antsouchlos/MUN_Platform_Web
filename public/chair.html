@@ -21,7 +21,7 @@
 				<!-- Header -->
 					<header id="header" class="alt">
 						<h1 id="studentOfficer_text">Student Officer</h1>
-						<p id="commite_text">committee var</p>
+						<p id="committee_text">committee var</p>
 					</header>
 
 				<!-- Nav -->
@@ -47,7 +47,7 @@
 										<p> Enter the name of the resolution and pick the topic. Then click on the search button 
 											and find the text document. Click on Upload and wait until it's uploaded succesfully.
 											At the end send the CO-Submitter Sign Up Sheet to the Draft Panel. WARNING: Without
-											it the resolution will not get the D-Number. 
+											it the resolution will not get the D-Number.
 										</p>
 										<div class="row uniform">
 											<div class="12u$">
@@ -88,12 +88,7 @@
 								<p>Pick the resolution to check its status</p>
 								<div class="12u$">
 									<div class="select-wrapper">
-										<select name="demo-category" id="demo-category">
-											<option value="">- Topic/Name -</option>
-											<option value="1">topic/name 1</option>
-											<option value="1">topic/name 2</option>
-											<option value="1">topic/name 3</option>
-											<option value="1">topic/name 4</option>
+										<select id="resList">
 										</select>
 									</div>
 								</div>
@@ -118,22 +113,22 @@
 											<tbody>
 												<tr>
 													<td>Uploaded</td>
-													<td>The time that the resolution was uploaded</td>
+													<td>The date and time that the resolution was uploaded</td>
 													<td>var</td>
 												</tr>
 												<tr>
 													<td>Archived</td>
-													<td>The time that the resolution got an ID</td>
+													<td>The date and time that the resolution got an ID</td>
 													<td>var</td>
 												</tr>
 												<tr>
 													<td>Aprooval Panel</td>
-													<td>The time that the delegate entered the Aprooval Panel</td>
+													<td>The date and time that the delegate entered the Aprooval Panel</td>
 													<td>var</td>
 												</tr>
 												<tr>
 													<td>A-Number</td>
-													<td>The time that the resolution got an A-Number</td>
+													<td>The date and time that the resolution got an A-Number</td>
 													<td>var</td>
 												</tr>
 											</tbody>
@@ -141,7 +136,9 @@
 												<tr>
 													<td>Debate Result</td>
 													<td colspan="1">
-													<td>var<td>
+                                                    <td>var</td>
+                                                </tr>
+                                            </tfoot>
 										</table>
 									</div>
 							</section>
@@ -154,12 +151,7 @@
 							</header>
 							<div class="12u$">
 								<div class="select-wrapper">
-									<select name="demo-category" id="demo-category">
-										<option value="">- Topic/Name -</option>
-										<option value="1">topic/name 1</option>
-										<option value="1">topic/name 2</option>
-										<option value="1">topic/name 3</option>
-										<option value="1">topic/name 4</option>
+									<select id="resList2">
 									</select>
 								</div>
 							</div>

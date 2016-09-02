@@ -35,16 +35,12 @@ function init() {
         var email = firebaseUser.email;
         
         if (email == "political@dsamun.com") {
-            currentCommittee = "political";
             document.location.href = "chair.html";
         } else if (email == "disarmament@dsamun.com") {
-            currentCommittee = "disarmament";
             document.location.href = "chair.html";
         } else if (email == "humanitarian@dsamun.com") {
-            currentCommittee = "humanitarian";
             document.location.href = "chair.html";
         } else if (email == "environmental@dsamun.com") {
-            currentCommittee = "environmental";
             document.location.href = "chair.html";
         } else if (email == "staff@dsamun.com") {
             document.location.href = "staff.html";

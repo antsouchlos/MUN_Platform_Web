@@ -1,4 +1,4 @@
-var currentCommittee = "null";
+var currentCommittee;
 
 function getStudentOfficer(committee) {
     if (committee == "political") {
