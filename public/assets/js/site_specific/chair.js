@@ -1,4 +1,8 @@
 function init() {
+    //set the title and subtitle of the site
+    document.getElementById("studentOfficer_text").innerHTML = getStudentOfficer(currentCommittee);
+    document.getElementById("committee_text").innerHTML = getFullCommitteeName(currentCommittee);
+    
     //hide the msg_text message
     document.getElementById("msg_text").style.visibility = "hidden";
     
@@ -30,7 +34,7 @@ function init() {
             //Get the selected topic
             var topic = topicView.options[topicView.selectedIndex].text;
             
-            var storageRef = firebase.storage().ref("resolutions/" + topic + "/" + resName.value);
+            var storageRef = firebase.storage().ref("resolutions/" + currentCommittee + "/" + topic + "/" + resName.value);
 
             //upload file
             var uploadTask = storageRef.put(file);
@@ -65,7 +69,7 @@ function init() {
                             counter = parseInt(snapshot.val()) + 1;
 
                             //create the new resolution-reference
-                            var databaseRef = firebase.database().ref().child('resolutions').child(topic).child(counter.toString());
+                            var databaseRef = firebase.database().ref().child('resolutions').child(currentCommittee).child(topic).child(counter.toString());
 
                             //set the name of the new resolution
                             databaseRef.set(resName.value);

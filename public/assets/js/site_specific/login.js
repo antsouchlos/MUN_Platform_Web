@@ -26,11 +26,11 @@ function init() {
     document.getElementById("wrong_cred").style.visibility = "hidden";
     
     firebase.auth().onAuthStateChanged(firebaseUser => {
-        /*if(firebaseUser.email == "an.tsouchlos@gmail.com") {
+        if(firebaseUser.email == "an.tsouchlos@gmail.com") {
             document.location.href = "staff.html";
         } else if (firebaseUser.email == "dimpeppas@hotmail.gr"){
-            document.location.href = "chair.html";
-        }*/
+            document.location.href = "staff.html";
+        }
         
         var email = firebaseUser.email;
         
