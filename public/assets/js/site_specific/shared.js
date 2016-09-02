@@ -1,5 +1,3 @@
-var currentCommittee;
-
 function getStudentOfficer(committee) {
     if (committee == "political") {
         return "Special Political and Decolonization Committee";

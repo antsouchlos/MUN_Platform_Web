@@ -1,3 +1,53 @@
+//takes the value of a select-option (form: "Resolution [id]: [topic]/[name]") as an argument and return the id
+function getId(txt) {
+    var result = "";
+    
+   	var writing = false;
+    
+    for (i = 0; i < txt.length; i++) {
+        if (!writing) {
+            if (txt.charAt(i) == ' ')
+                writing = true;
+        } else {
+            if (txt.charAt(i) == ' ')
+                break;
+            else
+                result += txt.charAt(i);
+        }
+    }
+
+    return parseInt(result);
+}
+
+function uploadDateAndTime(id, type) {
+    var resolutionRef = firebase.database().ref().child("metadata").child(id.toString()).child(type);
+    
+    var currentDate = new Date();
+    var dateAndTime = "";
+    
+    var day = currentDate.getDay(); 
+    
+    if (day == 0) {
+        dateAndTime += "Sun, ";
+    } else if (day == 1) {
+        dateAndTime += "Mon, ";
+    } else if (day == 2) {
+        dateAndTime += "Tue, ";
+    } else if (day == 3) {
+        dateAndTime += "Wed, ";
+    } else if(day == 4) {
+        dateAndTime += "Thu, ";
+    } else if(day == 5) {
+        dateAndTime += "Fri, ";
+    } else {
+        dateAndTime += "Sat, ";
+    }
+    
+    dateAndTime += currentDate.getHours() + ':' + currentDate.getMinutes() + ":" + currentDate.getSeconds();
+    
+    resolutionRef.child("dateAndTime").set(dateAndTime);
+}
+
 function addChild(name, id, listName) {
     var list = document.getElementById(listName);
     var item = document.createElement("option");
@@ -48,7 +98,7 @@ function init() {
     
     //set the title and subtitle of the site
     //TODO: set studen officers and remove this variable
-    studentOfficer = "[tbd] - Student officer";
+    var studentOfficer = "[tbd] - Student officer";
     
     var fired = false;
     firebase.auth().onAuthStateChanged(firebaseUser => {
@@ -143,7 +193,7 @@ function init() {
                         //make the msg_text message visible
                         document.getElementById("msg_text").style.visibility = "visible";
 
-                        //----add the resolution to the realtime database----
+                        //add the resolution to the realtime database
                         var rootRef = firebase.database().ref();
                         var counterRef = rootRef.child('counter');
 
@@ -164,6 +214,9 @@ function init() {
 
                                 //set the name of the new resolution
                                 databaseRef.set(resName.value);
+                                
+                                //add the resolution metadata to the realtime database
+                                uploadDateAndTime(counter, "uploaded");
 
                                 //update the counter
                                 counterRef.set(counter.toString());
@@ -179,6 +232,80 @@ function init() {
         //make sure the default link behaviour doesn't happen
         return false;
     }
+    
+    document.getElementById("check_link").onclick = function() {
+        var resList = document.getElementById("resList");
+        
+        if (resList.selectedIndex != -1) {
+            var metaReference = firebase.database().ref().child("metadata").child(getId(resList.options[resList.selectedIndex].text));
+            
+            metaReference.once("value", function(snapshot) {
+            	if (snapshot.hasChild("uploaded")) {
+		            var uploadedMeta = metaReference.child("uploaded");
+		            
+		            uploadedMeta.child("dateAndTime").once("value", function(localSnapshot) {
+			            document.getElementById("uploaded_txt").innerHTML = localSnapshot.val();
+		            });
+            	}
+            	
+            	if (snapshot.hasChild("archived")) {
+		            var archivedMeta = metaReference.child("archived");
+		            
+		            archivedMeta.child("dateAndTime").once("value", function(localSnapshot) {
+			            document.getElementById("archived_txt").innerHTML = localSnapshot.val();
+		            });
+            	}
+            	
+            	if (snapshot.hasChild("approoval")) {
+		            var approovalMeta = metaReference.child("approval");
+		            
+		            approovalMeta.child("dateAndTime").once("value", function(localSnapshot) {
+			            document.getElementById("approoval_txt").innerHTML = localSnapshot.val();
+		            });
+            	}
+            	
+            	if (snapshot.hasChild("aNumber")) {
+		            var aNumberMeta = metaReference.child("aNumber");
+		            
+		            aNumberMeta.child("dateAndTime").once("value", function(localSnapshot) {
+			            document.getElementById("aNumber_txt").innerHTML = localSnapshot.val();
+		            });
+            	}
+            	
+            	if (snapshot.hasChild("debate")) {
+		            var debateMeta = metaReference.child("debate");
+		            
+		            debateMeta.once("value", function(localSnapshot) {
+			            document.getElementById("debate_txt").innerHTML = localSnapshot.val();
+		            });
+            	}
+            });
+
+        } else {
+            alert("You must choose a resolution to check");
+        }
+        
+        return false;
+    };
+    
+    document.getElementById("debateSubmit_link").onclick = function () {
+    	var debatePassed_radio = document.getElementById("debatePassed_radio");
+    	var resList2 = document.getElementById("resList2");
+    	
+    	if (resList2.selectedIndex != -1) {
+	        var debateReference = firebase.database().ref().child("metadata").child(getId(resList2.options[resList2.selectedIndex].text)).child("debate");
+	    	
+	    	if (debatePassed_radio.checked == true) {
+	    		debateReference.set("passed");
+	    	} else {
+	    		debateReference.set("failed");
+	    	}
+    	} else {
+    		alert("You must choose a resolution to update its debate status");
+    	}
+    	
+    	return false;
+    };
 }
 
 window.onload = init;
