@@ -26,10 +26,28 @@ function init() {
     document.getElementById("wrong_cred").style.visibility = "hidden";
     
     firebase.auth().onAuthStateChanged(firebaseUser => {
-        if(firebaseUser.email == "an.tsouchlos@gmail.com") {
+        /*if(firebaseUser.email == "an.tsouchlos@gmail.com") {
             document.location.href = "staff.html";
         } else if (firebaseUser.email == "dimpeppas@hotmail.gr"){
             document.location.href = "chair.html";
+        }*/
+        
+        var email = firebaseUser.email;
+        
+        if (email == "political@dsamun.com") {
+            currentCommittee = "political";
+            document.location.href = "chair.html";
+        } else if (email == "disarmament@dsamun.com") {
+            currentCommittee = "disarmament";
+            document.location.href = "chair.html";
+        } else if (email == "humanitarian@dsamun.com") {
+            currentCommittee = "humanitarian";
+            document.location.href = "chair.html";
+        } else if (email == "environmental@dsamun.com") {
+            currentCommittee = "environmental";
+            document.location.href = "chair.html";
+        } else if (email == "staff@dsamun.com") {
+            document.location.href = "staff.html";
         }
     });
 }
