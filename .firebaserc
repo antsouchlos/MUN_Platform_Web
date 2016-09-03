@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "dsa-mun-platform"
+    "default": "dsa-mun-platform",
+    "mun_andreas": "dsamun-9b8bd"
   }
 }

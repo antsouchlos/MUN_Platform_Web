@@ -123,6 +123,15 @@ function listen(reference, topic) {
 }
 
 function init() {
+    //add listener to the logout button
+    document.getElementById("logout_link").onclick = function () {
+    	firebase.auth().signOut();
+    	document.location.href = "index.html";
+    	
+    	//make sure the default link behaviour isn't followed
+    	return false;
+    };
+    
     //add listener to the "download" button
     var download_link = document.getElementById("download_link");
     download_link.onclick = function() {

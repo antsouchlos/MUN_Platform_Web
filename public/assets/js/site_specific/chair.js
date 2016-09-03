@@ -102,9 +102,25 @@ function init() {
     //hide the debateMsg
     document.getElementById("debateMsg").style.visibility = "hidden";
     
+    //reset the upload elements
+    document.getElementById("fileChooser").value = "";
+    document.getElementById("resName").value = "";
+    document.getElementById("topicView").selectedIndex = 0;
+    document.getElementById("resList").selectedIndex = 0;
+    document.getElementById("resList2").selectedIndex = 0;
+    
     //set the title and subtitle of the site
     //TODO: set studen officers and remove this variable
     var studentOfficer = "[tbd] - Student officer";
+    
+    //add listener to the logout button
+    document.getElementById("logout_link").onclick = function () {
+    	firebase.auth().signOut();
+    	document.location.href = "index.html";
+    	
+    	//make sure the default link behaviour isn't followed
+    	return false;
+    };
     
     var fired = false;
     firebase.auth().onAuthStateChanged(firebaseUser => {
