@@ -44,7 +44,7 @@
 										<header class="major">
 											<h2>Upload Resolution</h2>
 										</header>
-										<p> Enter the name of the resolution and pick the topic. Then click on the search button 
+										<p> Enter the name of the resolution and pick the topic. Then click on the browse button 
 											and find the text document. Click on Upload and wait until it's uploaded succesfully.
 											At the end send the CO-Submitter Sign Up Sheet to the Draft Panel. WARNING: Without
 											it the resolution will not get the D-Number.
@@ -158,18 +158,19 @@
 							<br>
 							<div class="row uniform">
 								<div class="4u 12u$(small)">
-									<input type="radio"checked id="debatePassed_radio">
-									<label for="demo-priority-low">Passed</label>
+									<input type="radio" id="debatePassed_radio" name="demo-priority" checked>
+									<label for="debatePassed_radio">Passed</label>
 								</div>
 								<div class="4u 12u$(small)">
-									<input type="radio" id="debateFailed_radio">
-									<label for="demo-priority-normal">Failed</label>
+									<input type="radio" id="debateFailed_radio" name="demo-priority">
+									<label for="debateFailed_radio">Failed</label>
 								</div>
 							</div>
 							<br>
 							<ul class="actions">
 								<li><a href="#" class="button special" id="debateSubmit_link">Submit</a></li>
 							</ul>
+							<h2 style="text-align:center" id="debateMsg"><font color="red">This resolution already has a debate status</font></h2>
 						</section>
 
 						<!-- Contact -->
