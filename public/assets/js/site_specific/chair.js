@@ -99,6 +99,9 @@ function listen(reference, topic, listName) {
 function init() {
     var currentCommittee = "null";
     
+    //hide the debateMsg
+    document.getElementById("debateMsg").style.visibility = "hidden";
+    
     //set the title and subtitle of the site
     //TODO: set studen officers and remove this variable
     var studentOfficer = "[tbd] - Student officer";
@@ -281,7 +284,7 @@ function init() {
 		            });
             	}
             	
-            	if (snapshot.hasChild("debate result")) {
+            	if (snapshot.hasChild("debate")) {
 		            var debateMeta = metaReference.child("debate");
 		            
 		            //set the status of the "debate" row in the "status" column
@@ -300,18 +303,31 @@ function init() {
     
     //add listener to the "submit" button
     document.getElementById("debateSubmit_link").onclick = function () {
-    	var debatePassed_radio = document.getElementById("debatePassed_radio");
+        //hide the debateMsg
+        document.getElementById("debateMsg").style.visibility = "hidden";
+        
+    	var debatePassed_radio= document.getElementById("debatePassed_radio");
     	var resList2 = document.getElementById("resList2");
     	
     	//make sure an item is selected
     	if (resList2.selectedIndex != -1) {
-	        var debateReference = firebase.database().ref().child("metadata").child(getId(resList2.options[resList2.selectedIndex].text)).child("debate");
+	        var metaReference = firebase.database().ref().child("metadata").child(getId(resList2.options[resList2.selectedIndex].text));
+	        //check if the resolution already has a debate status
+	        metaReference.once('value', function(snapshot) {
+	        	if (snapshot.hasChild("debate")) {
+	        	    //make the dabteMsg visible
+	        	    document.getElementById("debateMsg").style.visibility = "visible";
+	        	} else {
+	        		var debateReference = metaReference.child("debate");
+	        		
+	    	        if (debatePassed_radio.checked == true) {
+	    	    		debateReference.set("passed");
+	    	    	} else {
+	    	    		debateReference.set("failed");
+	    	    	}
+	        	}
+	        });
 	    	
-	    	if (debatePassed_radio.checked == true) {
-	    		debateReference.set("passed");
-	    	} else {
-	    		debateReference.set("failed");
-	    	}
     	} else {
     		alert("You must choose a resolution to update its debate status");
     	}
