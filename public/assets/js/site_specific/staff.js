@@ -83,10 +83,6 @@ function download() {
         var committee = getCommittee(relevant);
         var resName = getName(relevant);
         var resTopic = getTopic(relevant);
-        
-        alert(committee);
-        alert(resName);
-        alert(resTopic);
 
         //set up the firebase reference
         var storageRef = firebase.storage().ref();
