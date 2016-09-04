@@ -35,15 +35,15 @@
                                         
                                         <div class="row uniform">
                                             <div class="6u 12u$(xsmall)">
-                                                <input type="text" id="email_text" value="" placeholder="Email" />
+                                                <input type="text" id="email_text" value="" placeholder="Email" onkeyup="if (event.keyCode ==13) moveFocus();"/>
                                             </div>
                                             <div class="6u$ 12u$(xsmall)">
-                                                <input type="password" id="password_text" value="" placeholder="Password" />
+                                                <input type="password" id="password_text" value="" placeholder="Password" onkeyup="if (event.keyCode ==13) login()"/>
                                             </div>
                                             <div class="12u$">
                                                 <ul class="actions">
-                                                    <li><input type="submit" value="Log In" class="special" onclick="login()"/></li>
-                                                    <li><input type="reset" value="Reset" onclick="reset()"/></li>
+                                                    <li><input type="submit" value="Log In" class="special" onclick="login()" /></li>
+                                                    <li><input type="reset" value="Reset" onclick="login();"/></li>
                                                 </ul>
                                             </div>
                                         </div>

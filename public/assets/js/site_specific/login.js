@@ -21,6 +21,10 @@ function login() {
     return false;
 }
 
+function moveFocus() {
+	document.getElementById("password_text").focus();
+}
+
 function init() {
     //hide wrong_cred message
     document.getElementById("wrong_cred").style.visibility = "hidden";
