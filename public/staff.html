@@ -30,7 +30,7 @@
 							<li><a href="#download" class="active">Download</a></li>
 							<li><a href="#id">ID Registration</a></li>
 							<li><a href="#apanel">A-Panel</a></li>
-							<li><a href="#logout" id="logout_link">Log Out</a></li>
+							<li><a href="#logout">Log Out</a></li>
 						</ul>
 					</nav>
 
@@ -68,22 +68,17 @@
 								<p>Pick one of the downloaded resolutions to register them</p>
 								<div class="12u$">
 									<div class="select-wrapper">
-										<select id="resList_registration">
-											<option value="">- Committee/Topic/Name -</option>
-											<option value="1">Committee/Topic/Name 1</option>
-											<option value="1">Committee/Topic/Name 2</option>
-											<option value="1">Committee/Topic/Name 3</option>
-											<option value="1">Committee/Topic/Name 4</option>
-										</select>
+										<select id="resList_registration"></select>
 									</div>
 								</div>
 								<br>
 								<div>
 									<h2>Next ID:</h2>
 									<ul class="actions">
-										<li><a href="#" class="button special">Register</a></li>
+										<li><a href="#" class="button special" id="register_link">Register</a></li>
 									</ul>
-								</div>	
+								</div>
+								<h2 id="resRegistered_msg" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
 							</section>
 
 						<!-- A Panel -->
@@ -95,36 +90,28 @@
 							<p>Pick the resolution that entered the A-Panel</p>
 							<div class="12u$">
 								<div class="select-wrapper">
-									<select name="demo-category" id="demo-category">
-										<option value="">- ID -</option>
-										<option value="1">ID 1</option>
-										<option value="1">ID 2</option>
-										<option value="1">ID 3</option>
-										<option value="1">ID 4</option>
+									<select id="resList_aPanel">
 									</select>
 								</div>
 							</div>
-						<br>
-								<ul class="actions">
-									<li><a href="#" class="button special">Submit</a></li>
-								</ul>
-								<h2>A-Number</h2>
-								<p>Pick the resolution that got the A-Number</p>
+							<br>
+							<ul class="actions">
+								<li><a href="#" class="button special" id="aPanel_link">Submit</a></li>
+							</ul>
+							<h2 id="resRegistered_msg2" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
+							<h2>A-Number</h2>
+							<p>Pick the resolution that got the A-Number</p>
 							<div class="12u$">
 								<div class="select-wrapper">
-									<select name="demo-category" id="demo-category">
-										<option value="">- ID -</option>
-										<option value="1">ID 1</option>
-										<option value="1">ID 2</option>
-										<option value="1">ID 3</option>
-										<option value="1">ID 4</option>
+									<select id="resList_aNumber">
 									</select>
 								</div>
 							</div>
-						<br>
+							<br>
 							<ul class="actions">
-								<li><a href="#" class="button special">Submit</a></li>
+								<li><a href="#" class="button special" id="aNumber_link">Submit</a></li>
 							</ul>
+							<h2 id="resRegistered_msg3" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
 						</section>
 
 						<!-- Contact -->
@@ -135,7 +122,7 @@
 								</header>
 								<footer class="major">
 									<ul class="actions">
-										<li><a href="" class="button special">Log Out</a></li>
+										<li><a href="" class="button special" id="logout_link">Log Out</a></li>
 									</ul>
 								</footer>
 							</section>

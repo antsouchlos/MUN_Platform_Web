@@ -19,8 +19,8 @@ function getId(txt) {
     return parseInt(result);
 }
 
-function uploadDateAndTime(id, type) {
-    var resolutionRef = firebase.database().ref().child("metadata").child(id.toString()).child(type);
+function uploadDateAndTime(id) {
+    var resolutionRef = firebase.database().ref().child("metadata").child(id.toString()).child("uploaded");
     
     var currentDate = new Date();
     var dateAndTime = "";
@@ -47,7 +47,7 @@ function uploadDateAndTime(id, type) {
     //se the time
     dateAndTime += currentDate.getHours() + ':' + currentDate.getMinutes() + ":" + currentDate.getSeconds();
     
-    resolutionRef.child("dateAndTime").set(dateAndTime);
+    resolutionRef.set(dateAndTime);
 }
 
 function addChild(name, id, listName) {
@@ -257,57 +257,46 @@ function init() {
     
     //add listener to the "check" button
     document.getElementById("check_link").onclick = function() {
+    	document.getElementById("uploaded_txt").innerHTML = "";
+    	document.getElementById("archived_txt").innerHTML = "";
+		document.getElementById("approoval_txt").innerHTML = "";
+		document.getElementById("aNumber_txt").innerHTML = "";
+		document.getElementById("debate_txt").innerHTML = "";
+    	
         var resList = document.getElementById("resList");
-        
+
         if (resList.selectedIndex != -1) {
             var metaReference = firebase.database().ref().child("metadata").child(getId(resList.options[resList.selectedIndex].text));
             
-            //read the data of "metadata" once to be able to see weather the children exist
-            metaReference.once("value", function(snapshot) {
-            	if (snapshot.hasChild("uploaded")) {
-		            var uploadedMeta = metaReference.child("uploaded");
-		            
-		            //set the date and time for the "uploaded" row in the "status" column
-		            uploadedMeta.child("dateAndTime").once("value", function(localSnapshot) {
-			            document.getElementById("uploaded_txt").innerHTML = localSnapshot.val();
-		            });
-            	}
-            	
-            	if (snapshot.hasChild("archived")) {
-		            var archivedMeta = metaReference.child("archived");
-		            
-		            //set the date and time for the "archived" row in the "status" column
-		            archivedMeta.child("dateAndTime").once("value", function(localSnapshot) {
-			            document.getElementById("archived_txt").innerHTML = localSnapshot.val();
-		            });
-            	}
-            	
-            	if (snapshot.hasChild("approoval")) {
-		            var approovalMeta = metaReference.child("approval");
-		            
-		            //set the date and time for the "approoval panel" row in the "status" column
-		            approovalMeta.child("dateAndTime").once("value", function(localSnapshot) {
-			            document.getElementById("approoval_txt").innerHTML = localSnapshot.val();
-		            });
-            	}
-            	
-            	if (snapshot.hasChild("aNumber")) {
-		            var aNumberMeta = metaReference.child("aNumber");
-		            
-		            //set the date and time for the "a-number" row in the "status" column
-		            aNumberMeta.child("dateAndTime").once("value", function(localSnapshot) {
-			            document.getElementById("aNumber_txt").innerHTML = localSnapshot.val();
-		            });
-            	}
-            	
-            	if (snapshot.hasChild("debate")) {
-		            var debateMeta = metaReference.child("debate");
-		            
-		            //set the status of the "debate" row in the "status" column
-		            debateMeta.once("value", function(localSnapshot) {
-		            	document.getElementById("debate_txt").innerHTML = localSnapshot.val();
-		            });
-            	}
+            var uploadedRef = metaReference.child("uploaded");
+            var registeredRef = metaReference.child("registered");
+            var aPanelRef = metaReference.child("aPanel");
+            var aNumberRef = metaReference.child("aNumber");
+            var debateRef = metaReference.child("debate");
+            
+            uploadedRef.once("value", function (snapshot) {
+            	if (snapshot.exists())
+            		document.getElementById("uploaded_txt").innerHTML = snapshot.val();
+            });
+            
+            registeredRef.once("value", function (snapshot) {
+            	if (snapshot.exists())
+            		document.getElementById("archived_txt").innerHTML = snapshot.val();
+            });
+            
+            aPanelRef.once("value", function (snapshot) {
+            	if (snapshot.exists())
+            		document.getElementById("approoval_txt").innerHTML = snapshot.val();
+            });
+            
+            aNumberRef.once("value", function (snapshot) {
+            	if (snapshot.exists())
+            		document.getElementById("aNumber_txt").innerHTML = snapshot.val();
+            });
+            
+            debateRef.once("value", function(snapshot) {
+            	if (snapshot.exists())
+            		document.getElementById("debate_txt").innerHTML = snapshot.val();
             });
 
         } else {
