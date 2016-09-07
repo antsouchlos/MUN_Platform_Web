@@ -53,14 +53,26 @@ function uploadDateAndTime(id) {
 function addChild(name, id, listName) {
     var list = document.getElementById(listName);
     var item = document.createElement("option");
-    item.text = "Resolution " + id + ": " + name;
+    
+    if (id == -1)
+    	item.text += "ID [not registered]: ";
+    else
+    	item.text += "ID " + id.toString();
+    
+    item.text += ": " + name;
     list.add(item);
 }
 
-function changeChild(name, index, listName) {
+function changeChild(name, index, id, listName) {
     var list = document.getElementById(listName);
     var item = document.createElement("option");
-    item.text = "Resolution " + (index+1) + ": " + name;
+    
+    if (id == -1)
+    	item.text += "ID [not registered]";
+    else
+    	item.text += "ID " + id.toString();
+    
+    item.text += ": " + name;
 
     list.remove(index);
     list.add(item, index);
@@ -78,16 +90,30 @@ function listen(reference, topic, listName) {
     reference.on('child_added', function(childSnapshot, prevChildKey) {
         if (prevChildKey == null)
             prevChildKey = "0";
-
-        addChild(topic + '/' + childSnapshot.val(), parseInt(childSnapshot.key), listName);
+        
+        var id = -1;
+        
+        firebase.database().ref().child("D").child(parseInt(childSnapshot.key)).child("n").once("value", function(snapshot) {
+        	if (snapshot.exists())
+        		id = parseInt(snapshot.val());
+        	
+            addChild(topic + '/' + childSnapshot.val(), id, listName);
+        });
     });
 
     //change an item's text when the value of the corresponding child is changed in the database
     reference.on('child_changed', function(childSnapshot, prevChildKey) {
         if (prevChildKey == null)
             prevChildKey = "0";
-
-        changeChild(topic + '/' + childSnapshot.val(), parseInt(childSnapshot.key) -1, listName);
+        
+        var id = -1;
+        
+        firebase.database().ref().child("D").child(parseInt(childSnapshot.key)).child("n").once("value", function(snapshot) {
+        	if (snapshot.exists())
+        		id = parseInt(snapshot.key);
+        	
+            changeChild(topic + '/' + childSnapshot.val(), parseInt(childSnapshot.key) -1, id, listName);
+        });
     });
 
     //remove an item when the corresponding child is removed from the database
@@ -266,7 +292,9 @@ function init() {
         var resList = document.getElementById("resList");
 
         if (resList.selectedIndex != -1) {
-            var metaReference = firebase.database().ref().child("metadata").child(getId(resList.options[resList.selectedIndex].text));
+        	var id = getId(resList.options[resList.selectedIndex].text);
+        	
+            var metaReference = firebase.database().ref().child("metadata").child(id);
             
             var uploadedRef = metaReference.child("uploaded");
             var registeredRef = metaReference.child("registered");
@@ -282,6 +310,15 @@ function init() {
             registeredRef.once("value", function (snapshot) {
             	if (snapshot.exists())
             		document.getElementById("archived_txt").innerHTML = snapshot.val();
+
+            });
+            
+            firebase.database().ref().child("D").child(id).child("n").once("value", function (snapshot) {
+            	if (snapshot.exists())
+                	document.getElementById("id_txt").innerHTML = snapshot.val().toString();
+	        	else 
+	        		document.getElementById("id_txt").innerHTML = "Resolution not yet registered";
+        	
             });
             
             aPanelRef.once("value", function (snapshot) {
