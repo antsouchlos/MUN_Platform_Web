@@ -50,37 +50,40 @@ function uploadDateAndTime(id) {
     resolutionRef.set(dateAndTime);
 }
 
+var notRegistered = 0;
+
 function addChild(name, id, listName) {
     var list = document.getElementById(listName);
     var item = document.createElement("option");
     
-    if (id == -1)
-    	item.text += "ID [not registered]: ";
-    else
+    if (id == -1) {
+    	item.text += "ID [not registered]";
+    	notRegistered++;
+    	id = 1 - notRegistered;
+    } else
     	item.text += "ID " + id.toString();
     
     item.text += ": " + name;
-    list.add(item);
+    list.add(item, id -1 + notRegistered);
 }
 
-function changeChild(name, index, id, listName) {
+var notRegistered2 = 0;
+
+function changeChild(name, id, listName) {
     var list = document.getElementById(listName);
     var item = document.createElement("option");
     
-    if (id == -1)
+    if (id == -1) {
     	item.text += "ID [not registered]";
-    else
+		notRegistered2++;
+		id = 1 - notRegistered2;
+    } else
     	item.text += "ID " + id.toString();
     
     item.text += ": " + name;
 
     list.remove(index);
-    list.add(item, index);
-}
-
-function removeChild(index, listName) {
-    var list = document.getElementById(listName);
-    list.remove(index);
+    list.add(item, id -1 + notRegistered2);
 }
 
 //listen for changes to the children of "reference" and update "resList" accordingly
@@ -112,13 +115,8 @@ function listen(reference, topic, listName) {
         	if (snapshot.exists())
         		id = parseInt(snapshot.key);
         	
-            changeChild(topic + '/' + childSnapshot.val(), parseInt(childSnapshot.key) -1, id, listName);
+            changeChild(topic + '/' + childSnapshot.val(), id, listName);
         });
-    });
-
-    //remove an item when the corresponding child is removed from the database
-    reference.on('child_removed', function(oldChildSnapshot) {
-        removeChild(parseInt(oldChildSnapshot.key-1), listName);
     });
 }
 
