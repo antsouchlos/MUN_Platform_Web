@@ -413,6 +413,16 @@ function init() {
         //make sure the default link behaviour isn't followed
         return false;
     }
+    
+    firebase.database().ref().child("D").child("counter").once("value", function(snapshot) {
+    	var counter = 0;
+    	
+    	if (snapshot.exists())
+    		counter = snapshot.val();
+    	
+    	document.getElementById("next_id_txt").innerHTML = counter.toString();
+    	
+    });
 }
 
 window.onload = init;
