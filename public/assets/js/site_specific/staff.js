@@ -426,7 +426,8 @@ function init() {
         return false;
     }
     
-    firebase.database().ref().child("D").child("counter").once("value", function(snapshot) {
+    //set the 'Next ID' label
+    firebase.database().ref().child("D").child("counter").on("value", function(snapshot) {
     	var counter = 1;
     	
     	if (snapshot.exists())
