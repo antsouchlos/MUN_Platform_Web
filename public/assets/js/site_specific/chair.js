@@ -1,3 +1,6 @@
+//globsl variables
+var resList_ids = [];
+
 //takes the value of a select-option (form: "Resolution [id]: [topic]/[name]") as an argument and return the id
 function getId(txt) {
     var result = "";
@@ -44,7 +47,7 @@ function uploadDateAndTime(id) {
         dateAndTime += "Sat, ";
     }
     
-    //se the time
+    //set the time
     dateAndTime += currentDate.getHours() + ':' + currentDate.getMinutes() + ":" + currentDate.getSeconds();
     
     resolutionRef.set(dateAndTime);
@@ -52,7 +55,7 @@ function uploadDateAndTime(id) {
 
 var notRegistered = 0;
 
-function addChild(name, id, listName) {
+function addChild(originalId, name, id, listName) {
     var list = document.getElementById(listName);
     var item = document.createElement("option");
     
@@ -65,6 +68,10 @@ function addChild(name, id, listName) {
     
     item.text += ": " + name;
     list.add(item, id -1 + notRegistered);
+    
+    if (listName == "resList")
+    	resList_ids.splice(id -1 + notRegistered, 0, originalId);
+    	
 }
 
 var notRegistered2 = 0;
@@ -100,7 +107,7 @@ function listen(reference, topic, listName) {
         	if (snapshot.exists())
         		id = parseInt(snapshot.val());
         	
-            addChild(topic + '/' + childSnapshot.val(), id, listName);
+            addChild(parseInt(childSnapshot.key), topic + '/' + childSnapshot.val(), id, listName);
         });
     });
 
@@ -123,8 +130,10 @@ function listen(reference, topic, listName) {
 function init() {
     var currentCommittee = "null";
     
-    //hide the debateMsg
+    //hide the debateMsgs
     document.getElementById("debateMsg").style.visibility = "hidden";
+    document.getElementById("debateMsg2").style.visibility = "hidden";
+    document.getElementById("debateMsg3").style.visibility = "hidden";
     
     //reset the upload elements
     document.getElementById("fileChooser").value = "";
@@ -135,7 +144,7 @@ function init() {
     
     //set the title and subtitle of the site
     //TODO: set studen officers and remove this variable
-    var studentOfficer = "[tbd] - Student officer";
+    var studentOfficer = "Student officer";
     
     //add listener to the logout button
     document.getElementById("logout_link").onclick = function () {
@@ -240,36 +249,28 @@ function init() {
                         document.getElementById("msg_text").style.visibility = "visible";
 
                         //add the resolution to the realtime database
-                        var rootRef = firebase.database().ref();
-                        var counterRef = rootRef.child('counter');
+                        var counterRef = firebase.database().ref().child("counter");
 
                         var counter = 1;
 
                         //boolean to make sure the code doesn't execute every time the counter changes
-                        var read = false;
 
                         //get the value of the counter
-                        counterRef.on('value', function(snapshot) {
-                            if (!read) {
-                                read = true;
+                        counterRef.once("value", function(snapshot) {
+                            if (snapshot.exists())
+                                counter = snapshot.val() + 1;
 
-                                firebase.database().ref().child("counter").once("value", function(snapshot) {
-                                    if (snapshot.exists())
-                                        counter = parseInt(snapshot.val()) + 1;
+                            //create the new resolution-reference
+                            var databaseRef = firebase.database().ref().child("resolutions").child(currentCommittee).child(topic).child(counter);
 
-                                    //create the new resolution-reference
-                                    var databaseRef = firebase.database().ref().child('resolutions').child(currentCommittee).child(topic).child(counter.toString());
+                            //set the name of the new resolution
+                            databaseRef.set(resName.value);
+                            
+                            //add the resolution metadata to the realtime database
+                            uploadDateAndTime(counter, "uploaded");
 
-                                    //set the name of the new resolution
-                                    databaseRef.set(resName.value);
-                                    
-                                    //add the resolution metadata to the realtime database
-                                    uploadDateAndTime(counter, "uploaded");
-
-                                    //update the counter
-                                    counterRef.set(counter.toString());
-                                });
-                            }
+                            //update the counter
+                            counterRef.set(counter);
                         });
                     }
                 );
@@ -293,7 +294,7 @@ function init() {
         var resList = document.getElementById("resList");
 
         if (resList.selectedIndex != -1) {
-        	var id = getId(resList.options[resList.selectedIndex].text);
+        	var id = resList_ids[resList.selectedIndex];
         	
             var metaReference = firebase.database().ref().child("metadata").child(id);
             
@@ -346,31 +347,41 @@ function init() {
     
     //add listener to the "submit" button
     document.getElementById("debateSubmit_link").onclick = function () {
-        //hide the debateMsg
+        //hide the debateMsgs
         document.getElementById("debateMsg").style.visibility = "hidden";
+        document.getElementById("debateMsg2").style.visibility = "hidden";
+        document.getElementById("debateMsg3").style.visibility = "hidden";
         
     	var debatePassed_radio= document.getElementById("debatePassed_radio");
     	var resList2 = document.getElementById("resList2");
     	
     	//make sure an item is selected
     	if (resList2.selectedIndex != -1) {
-	        var metaReference = firebase.database().ref().child("metadata").child(getId(resList2.options[resList2.selectedIndex].text));
-	        //check if the resolution already has a debate status
-	        metaReference.once('value', function(snapshot) {
-	        	if (snapshot.hasChild("debate")) {
-	        	    //make the dabteMsg visible
-	        	    document.getElementById("debateMsg").style.visibility = "visible";
-	        	} else {
-	        		var debateReference = metaReference.child("debate");
-	        		
-	    	        if (debatePassed_radio.checked == true) {
-	    	    		debateReference.set("passed");
-	    	    	} else {
-	    	    		debateReference.set("failed");
-	    	    	}
-	        	}
-	        });
-	    	
+	        var metaReference = firebase.database().ref().child("metadata").child(resList_ids[resList2.selectedIndex]);
+	        
+	        //check if all the needed data is submitet before the resolution gets a debate status (ID, A-panel ID, ...)
+	        metaReference.child("aNumber").once("value", function(snapshot) {
+            	if (snapshot.exists()) {
+        	        //check if the resolution already has a debate status
+        	        metaReference.once('value', function(snapshot) {
+        	        	if (snapshot.hasChild("debate")) {
+        	        	    document.getElementById("debateMsg").style.visibility = "visible";
+        	        	} else {
+        	        		var debateReference = metaReference.child("debate");
+        	        		
+        	    	        if (debatePassed_radio.checked == true) {
+        	    	    		debateReference.set("passed");
+        	    	    	} else {
+        	    	    		debateReference.set("failed");
+        	    	    	}
+        	    	        
+        	    	        document.getElementById("debateMsg3").style.visibility = "visible";
+        	        	}
+        	        });
+            	} else {
+            		document.getElementById("debateMsg2").style.visibility = "visible";
+            	}
+            });
     	} else {
     		alert("You must choose a resolution to update its debate status");
     	}

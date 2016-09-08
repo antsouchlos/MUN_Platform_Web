@@ -225,6 +225,7 @@ function getDateAndTime() {
 
 function register() {
 	document.getElementById("resRegistered_msg").style.visibility = "hidden";
+	document.getElementById("resRegistered_msg4").style.visibility = "hidden";
 	
 	var list = document.getElementById("resList_registration");
 	
@@ -254,6 +255,8 @@ function register() {
 					
 					//add 1 to the value of the counter
 					dRef.child("counter").set(counter+1);
+					
+					document.getElementById("resRegistered_msg4").style.visibility = "visible";
 				});	
 			} else {
 				document.getElementById("resRegistered_msg").style.visibility = "visible";
@@ -266,6 +269,7 @@ function register() {
 
 function submit_aPanel() {
 	document.getElementById("resRegistered_msg2").style.visibility = "hidden";
+	document.getElementById("resRegistered_msg5").style.visibility = "hidden";
 	
 	var list = document.getElementById("resList_aPanel");
 	
@@ -278,6 +282,8 @@ function submit_aPanel() {
 				firebase.database().ref().child("A_Panel").child(id).set("");
 				
 				firebase.database().ref().child("metadata").child(parseInt(id)).child("aPanel").set(getDateAndTime());
+				
+				document.getElementById("resRegistered_msg5").style.visibility = "visible";
 			} else {
 				document.getElementById("resRegistered_msg2").style.visibility = "visible";
 			}
@@ -289,6 +295,7 @@ function submit_aPanel() {
 
 function submit_aNumber() {
 	document.getElementById("resRegistered_msg3").style.visibility = "hidden";
+	document.getElementById("resRegistered_msg6").style.visibility = "hidden";
 	
 	var list = document.getElementById("resList_aNumber");
 	
@@ -301,6 +308,8 @@ function submit_aNumber() {
 				firebase.database().ref().child("A_Number").child(id).set("");
 				
 				firebase.database().ref().child("metadata").child(parseInt(id)).child("aNumber").set(getDateAndTime());
+				
+				document.getElementById("resRegistered_msg6").style.visibility = "visible";
 			} else {
 				document.getElementById("resRegistered_msg3").style.visibility = "visible";
 			}
@@ -345,6 +354,9 @@ function init() {
 	document.getElementById("resRegistered_msg").style.visibility = "hidden";
 	document.getElementById("resRegistered_msg2").style.visibility = "hidden";
 	document.getElementById("resRegistered_msg3").style.visibility = "hidden";
+	document.getElementById("resRegistered_msg4").style.visibility = "hidden";
+	document.getElementById("resRegistered_msg5").style.visibility = "hidden";
+	document.getElementById("resRegistered_msg6").style.visibility = "hidden";
 
     //add listener to the logout button
     document.getElementById("logout_link").onclick = function () {
@@ -415,7 +427,7 @@ function init() {
     }
     
     firebase.database().ref().child("D").child("counter").once("value", function(snapshot) {
-    	var counter = 0;
+    	var counter = 1;
     	
     	if (snapshot.exists())
     		counter = snapshot.val();
