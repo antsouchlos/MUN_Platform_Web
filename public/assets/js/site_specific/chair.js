@@ -243,7 +243,7 @@ function init() {
                         var rootRef = firebase.database().ref();
                         var counterRef = rootRef.child('counter');
 
-                        var counter;
+                        var counter = 1;
 
                         //boolean to make sure the code doesn't execute every time the counter changes
                         var read = false;
@@ -253,19 +253,22 @@ function init() {
                             if (!read) {
                                 read = true;
 
-                                counter = parseInt(snapshot.val()) + 1;
+                                firebase.database().ref().child("counter").once("value", function(snapshot) {
+                                    if (snapshot.exists())
+                                        counter = parseInt(snapshot.val()) + 1;
 
-                                //create the new resolution-reference
-                                var databaseRef = firebase.database().ref().child('resolutions').child(currentCommittee).child(topic).child(counter.toString());
+                                    //create the new resolution-reference
+                                    var databaseRef = firebase.database().ref().child('resolutions').child(currentCommittee).child(topic).child(counter.toString());
 
-                                //set the name of the new resolution
-                                databaseRef.set(resName.value);
-                                
-                                //add the resolution metadata to the realtime database
-                                uploadDateAndTime(counter, "uploaded");
+                                    //set the name of the new resolution
+                                    databaseRef.set(resName.value);
+                                    
+                                    //add the resolution metadata to the realtime database
+                                    uploadDateAndTime(counter, "uploaded");
 
-                                //update the counter
-                                counterRef.set(counter.toString());
+                                    //update the counter
+                                    counterRef.set(counter.toString());
+                                });
                             }
                         });
                     }
