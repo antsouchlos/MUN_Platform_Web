@@ -30,6 +30,7 @@
 							<li><a href="#upload" class="active">Upload</a></li>
 							<li><a href="#status">Resolution Status</a></li>
 							<li><a href="#debate">Debate Result</a></li>
+							<li><a href="#ga">Resolutions for GA</a></li>
 							<li><a href="#logout">Log Out</a></li>
 						</ul>
 					</nav>
@@ -98,9 +99,8 @@
 								</ul>
 								<div>
 									<br>
-									<h1>ID:</h1>
+									<h1>ID: <font id="id_txt"></font> </h1>
 								</div>
-									<h3 id="id_txt"></h3>
 									<div class="table-wrapper">
 										<table>
 											<thead>
@@ -138,8 +138,24 @@
 													<td colspan="1">
                                                     <td id="debate_txt"></td>
                                                 </tr>
+												<tr>
+													<td>GA Status</td>
+													<td colspan="1">
+                                                    <td id="GA_txt"></td>
+                                                </tr>
                                             </tfoot>
 										</table>
+									</div>
+									<p>You can download the digital form of the resolution that has an A-Number</p>
+										<div id="content">
+                                            
+										<select id="AnumList"></select>
+                                            
+										<br>
+											<ul class="actions">
+												<li><a href="#" class="button icon fa-download" id="download_link">Download</a></li>
+											</ul>
+											<h2 style="text-align:center" id="AnumMsg"><font color="red">This resolution doesn't have the A-Number</font></h2>
 									</div>
 							</section>
 
@@ -171,14 +187,58 @@
 								<li><a href="#" class="button special" id="debateSubmit_link">Submit</a></li>
 							</ul>
 							<h2 style="text-align:center" id="debateMsg2"><font color="red"><br>Resolutions must have an A-Number in order to change their debate status</font></h2>
-							<h2 style="text-align:center" id="debateMsg"><font color="red">This resolution already has a debate status</font></h2>
+							<h2 style="text-align:center" id="debateMsg"><font color="red">This resolution has already a debate status</font></h2>
 							<h2 style="text-align:center" id="debateMsg3"><font color="green">Debate status set</font></h2>
+						</section>
+						
+						<!-- GA Resulution -->
+						<section id="ga" class="main">
+							<header class="major">
+								<h2>Resolutions for GA</h2>
+								<p>Please choose the resolutions suitable for GA</p>
+							</header>
+							<div class="12u$">
+								<div class="select-wrapper">
+									<select id="resList2">
+									</select>
+								</div>
+							</div>
+							<br>
+							<div class="row uniform">
+								<div class="4u 12u$(small)">
+									<input type="radio" id="GaAprooved_radio" name="demo-priority" checked>
+									<label for="GaAprooved_radio">Aprooved for GA</label>
+								</div>
+								<div class="4u 12u$(small)">
+									<input type="radio" id="GaNotAprooved_radio" name="demo-priority">
+									<label for="GaNotAprooved_radio">Not Aprooved for GA</label>
+								</div>
+							</div>
+							<br>
+							<ul class="actions">
+								<li><a href="#" class="button special" id="GaSubmit_link">Submit</a></li>
+							</ul>
+							<h2 style="text-align:center" id="GaMsg2"><font color="red"><br>Resolutions must be passed in order to be suitable for GA</font></h2>
+							<h2 style="text-align:center" id="GaMsg"><font color="red">This resolution has already a GA status</font></h2>
+							<h2 style="text-align:center" id="GaMsg3"><font color="green">GA status set</font></h2>
+							<hr>
+							<p>You can download the most recent digital form of the resolution that is aprooved for GA</p>
+							<div id="content">
+                                            
+							<select id="GaList"></select>
+                                            
+								<br>
+							<ul class="actions">
+								<li><a href="#" class="button icon fa-download" id="download_link">Download</a></li>
+							</ul>
+							<h2 style="text-align:center" id="GaMsg"><font color="red">This resolution isn't aprooved for GA</font></h2>
+						</div>
 						</section>
 
 						<!-- Contact -->
 							<section id="logout" class="main special">
 								<header class="major">
-									<h2>Contact Us</h2>
+									<h2>Log Out</h2>
 									<p>Your credentials are stored until you logout, so at the end please logout.</p>
 								</header>
 								<footer class="major">

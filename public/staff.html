@@ -21,7 +21,6 @@
 				<!-- Header -->
 					<header id="header" class="alt">
 						<h1>Computer Staff</h1>
-						<p>Staff degree var</p>
 					</header>
 
 				<!-- Nav -->
@@ -30,6 +29,7 @@
 							<li><a href="#download" class="active">Download</a></li>
 							<li><a href="#id">ID Registration</a></li>
 							<li><a href="#apanel">A-Panel</a></li>
+							<li><a href="#GA">GA Registration</a></li>
 							<li><a href="#logout">Log Out</a></li>
 						</ul>
 					</nav>
@@ -102,12 +102,16 @@
 							<h2 id="resRegistered_msg2" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
 							<h2 id="resRegistered_msg5" style="text-align:center"><font color="green">Resolution registered</font></h2>
 							<h2>A-Number</h2>
-							<p>Pick the resolution that got the A-Number</p>
+							<p>Pick the resolution that got the A-Number and upload the corrected version.</p>
 							<div class="12u$">
 								<div class="select-wrapper">
 									<select id="resList_aNumber">
 									</select>
 								</div>
+							</div>
+							<div>
+								<br>
+								<input type="file" id="fileChooser" placeholder="Choose document">
 							</div>
 							<br>
 							<ul class="actions">
@@ -116,6 +120,29 @@
 							<h2 id="resRegistered_msg3" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
 							<h2 id="resRegistered_msg6" style="text-align:center"><font color="green">Resolution registered</font></h2>
 						</section>
+
+						<!-- GA -->
+							<section id="GA" class="main">
+								<header class="major">
+									<h2>GA Registration</h2>
+								</header>
+								<p>Pick one of the resolutions and upload the most recent version with the amendments</p>
+								<div class="12u$">
+									<div class="select-wrapper">
+										<select id="resList_registration"></select>
+									</div>
+								</div>
+								<br>
+								<div>
+									<input type="file" id="fileChooser" placeholder="Choose document">
+									<ul class="actions">
+										<br>
+										<li><a href="#" class="button special" id="register_link">Submit</a></li>
+									</ul>
+								</div>
+								<h2 id="resRegistered_msg" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
+								<h2 id="resRegistered_msg4" style="text-align:center"><font color="green">Resolution registered</font></h2>
+							</section>
 
 						<!-- Contact -->
 							<section id="logout" class="main special">
