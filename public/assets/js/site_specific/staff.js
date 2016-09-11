@@ -1,75 +1,3 @@
-//takes the the text of a select-option as an argument and returns only the relevant part for download (only the resolution name and topic - without the id)
-function getRelevant(itemValue) {
-    var result = "";
-
-    var writing = false;
-
-    for (i = 0; i < itemValue.length; i++) {
-        if (!writing) {
-            if (itemValue.charAt(i) == ':') {
-                i++;
-                writing = true;
-            }
-        } else {
-            result += itemValue.charAt(i);
-        }
-    }
-
-    return result;
-}
-
-//extract just the committee of a string of the form: "[committee]/[topic]/[name]"
-function getCommittee(txt) {
-    var result= "";
-    
-    for (i = 0; i < txt.length; i++) {
-        if (txt.charAt(i) == '/')
-            break;
-        
-        result += txt.charAt(i);
-    }
-    
-    return result;
-}
-
-//extract just the name of a string of the form: "[committee]/[topic]/[name]"
-function getName(txt) {
-    var result= "";
-    
-    var writing = 0;
-    
-    for (i = 0; i < txt.length; i++) {
-        if (writing < 2) {
-            if (txt.charAt(i) == '/')
-                writing++;
-        } else {
-            result += txt.charAt(i);
-        }
-    }
-    
-    return result;
-}
-
-//extract just the topic of a string of the form: "[committee]/[topic]/[name]"
-function getTopic(txt) {
-    var result= "";
-    
-    var writing = false;
-    
-    for (i = 0; i < txt.length; i++) {
-        if (!writing) {
-            if (txt.charAt(i) == '/')
-                writing = true;
-        } else {
-        	if (txt.charAt(i) == '/')
-        		break;
-            result += txt.charAt(i);
-        }
-    }
-    
-    return result;
-}
-
 function download() {
     var list = document.getElementById("resList");
 
@@ -119,41 +47,12 @@ function getId(txt) {
     return parseInt(result);
 }
 
-//an array containing a copy of the resolutions' ids of "resList"
-var resList_ids = [];
-
-function getInsertionIndex(id, list) {
-	var array = [];
-	
-	for (i = 0 ; i < list.length; i++) {
-		if (list[i] == id-1)
-			return (i+1);
-		
-		if (id < list[i])
-			array.push(list[i]);
-	}
-	
-	if (array.length == 0)
-		return 0;
-	
-	
-	var smallest = id;
-	
-	for (i = 0; i < array.length; i++) {
-		if (array[i] < smallest)
-			smallest = array[i];
-	}
-	
-	return (list.indexOf(smallest) -1);
-}
-
 function addChild(name, id, listName) {
     var list = document.getElementById(listName);
     var item = document.createElement("option");
     item.text = "Resolution " + id + ": " + name;
     
-    resList_ids.splice(getInsertionIndex(id, resList_ids), 0, id);
-    list.add(item, getInsertionIndex(id, resList_ids));
+    list.add(item);
 }
 
 function changeChild(name, index, listName) {
@@ -168,30 +67,6 @@ function changeChild(name, index, listName) {
 function removeChild(index, listName) {
     var list = document.getElementById(listName);
     list.remove(index);
-}
-
-//listen for changes to the children of "reference" and update "resList" accordingly
-function listen(reference, topic, committee, listName) {
-    //add an item to list when a child is added to the database
-    reference.on('child_added', function(childSnapshot, prevChildKey) {
-        if (prevChildKey == null)
-            prevChildKey = "0";
-
-        addChild(committee + '/' + topic + '/' + childSnapshot.val(), parseInt(childSnapshot.key), listName);
-    });
-
-    //change an item's text when the value of the corresponding child is changed in the database
-    reference.on('child_changed', function(childSnapshot, prevChildKey) {
-        if (prevChildKey == null)
-            prevChildKey = "0";
-
-        changeChild(committee + '/' + topic + '/' + childSnapshot.val(), parseInt(childSnapshot.key)-1, listName);
-    });
-
-    //remove an item when the corresponding child is removed from the database
-    reference.on('child_removed', function(oldChildSnapshot) {
-        removeChild(parseInt(oldChildSnapshot.key-1), listName);
-    });
 }
 
 function getDateAndTime() {
@@ -223,6 +98,48 @@ function getDateAndTime() {
     return dateAndTime;
 }
 
+function gaUpload(file) {
+	document.getElementById("GaResRegistered_msg").style.visibility = "hidden";
+	document.getElementById("GaResRegistered_msg4").style.visibility = "hidden";
+	
+	if (file != null) {
+		var list = document.getElementById("resList_GaRegistration");
+		
+		if (list.selectedIndex != -1) {
+			var id = getId(list.options[list.selectedIndex].text);
+			
+			firebase.database().ref().child("GA").child(id).once("value", function(snapshot) {
+				if (!snapshot.exists()) {
+		        	var storageRef = firebase.storage().ref().child("GA").child(id.toString());
+		        	var uploadTask = storageRef.put(file);
+
+		        	uploadTask.on('state_changed',
+		                    function progress(snapshot) {},
+		        			
+		                    function error(err) {
+		    					alert("An error occurred");
+		                    },
+	
+		                    function complete() {
+		                        //register the resolution as 'ready to download'
+		                    	firebase.database().ref().child("GA_Ready").child(id).set("");
+		                    	
+		                    	document.getElementById("GaResRegistered_msg4").style.visibility = "visible";
+		                    }
+		            );
+
+				} else {
+					document.getElementById("GaResRegistered_msg").style.visibility = "visible";
+				}
+			});
+		} else {
+			alert("You must choose an ID to upload the file to");
+		}
+	} else {
+		alert("You must choose a file to upload");
+	}
+}
+
 function register() {
 	document.getElementById("resRegistered_msg").style.visibility = "hidden";
 	document.getElementById("resRegistered_msg4").style.visibility = "hidden";
@@ -233,9 +150,9 @@ function register() {
 	if (list.selectedIndex != -1) {
 		var option_text = list[list.selectedIndex].text;
 		
-		var dRef = firebase.database().ref().child("D");
+		var dRef = firebase.database().ref().child('D');
 		
-		dRef.child(getId(option_text)).once("value", function (snapshot) {
+		firebase.database().ref().child("metadata").child(getId(option_text)).child("id").once("value", function (snapshot) {
 			if (!snapshot.exists()) {
 				var counter = 1;
 				
@@ -244,14 +161,13 @@ function register() {
 						counter = snapshot.val();
 					}
 					
-					var resRef = dRef.child(getId(option_text));
+					var resRef = dRef.child(counter);
 
-					resRef.child("n").set(counter);
-					resRef.child("committee").set(getCommittee(getRelevant(option_text)));
-					resRef.child("topic").set(getTopic(getRelevant(option_text)));
-					resRef.child("name").set(getName(getRelevant(option_text)));
+					//set the new id
+					resRef.set(getId(option_text));
 					
 					firebase.database().ref().child("metadata").child(getId(option_text).toString()).child("registered").set(getDateAndTime());
+					firebase.database().ref().child("metadata").child(getId(option_text).toString()).child("id").set(counter);
 					
 					//add 1 to the value of the counter
 					dRef.child("counter").set(counter+1);
@@ -279,11 +195,14 @@ function submit_aPanel() {
 		
 		firebase.database().ref().child("A_Panel").child(id).once("value", function (snapshot) {
 			if (!snapshot.exists()) {
-				firebase.database().ref().child("A_Panel").child(id).set("");
-				
-				firebase.database().ref().child("metadata").child(parseInt(id)).child("aPanel").set(getDateAndTime());
-				
-				document.getElementById("resRegistered_msg5").style.visibility = "visible";
+				firebase.database().ref().child("D").child(id).once("value", function(innerSnapshot) {
+					var originalId = innerSnapshot.val();
+					
+					firebase.database().ref().child("A_Panel").child(id).set(originalId);
+					firebase.database().ref().child("metadata").child(id).child("aPanel").set(getDateAndTime());
+					
+					document.getElementById("resRegistered_msg5").style.visibility = "visible";
+				});
 			} else {
 				document.getElementById("resRegistered_msg2").style.visibility = "visible";
 			}
@@ -293,7 +212,7 @@ function submit_aPanel() {
 	}
 }
 
-function submit_aNumber() {
+function submit_aNumber(file) {
 	document.getElementById("resRegistered_msg3").style.visibility = "hidden";
 	document.getElementById("resRegistered_msg6").style.visibility = "hidden";
 	
@@ -301,35 +220,74 @@ function submit_aNumber() {
 	
 	//make sure a resolution is selected
 	if (list.selectedIndex != -1) {
-		var id = parseInt(getRelevant(list[list.selectedIndex].text));
-		
-		firebase.database().ref().child("A_Number").child(id).once("value", function(snapshot) {
-			if (!snapshot.exists()) {
-				firebase.database().ref().child("A_Number").child(id).set("");
-				
-				firebase.database().ref().child("metadata").child(parseInt(id)).child("aNumber").set(getDateAndTime());
-				
-				document.getElementById("resRegistered_msg6").style.visibility = "visible";
-			} else {
-				document.getElementById("resRegistered_msg3").style.visibility = "visible";
-			}
-		});
+		if (file != null) {
+			var id = parseInt(getRelevant(list[list.selectedIndex].text));
+			
+			firebase.database().ref().child("A_Number").child(id).once("value", function(snapshot) {
+				if (!snapshot.exists()) {
+			        var storageRef = firebase.storage().ref("A/" + id);
+			        
+			        //upload file
+			        storageRef.put(file).on('state_changed',
+			            function progress(middleSnapshot) {},
+			            function error(err) {},
+
+			            function complete() {
+			            	firebase.database().ref().child("D").child(id).once("value", function(innerSnapshot) {
+								var originalId = innerSnapshot.val();
+								
+								firebase.database().ref().child("A_Number").child(id).set(originalId);
+								firebase.database().ref().child("metadata").child(parseInt(id)).child("aNumber").set(getDateAndTime());
+								
+								document.getElementById("resRegistered_msg6").style.visibility = "visible";
+							});
+			            }
+			        );
+				} else {
+					document.getElementById("resRegistered_msg3").style.visibility = "visible";
+				}
+			});
+		} else {
+			alert("You must choose a file to upload to register a resolution for an A-Number");
+		}
 	} else {
 		alert("You must select a resolution to give an A-Number to");
 	}
 }
 
+//listen for changes to the children of "reference" and update "resList" accordingly
+function listen(reference, topic, committee, listName) {
+    //add an item to list when a child is added to the database
+    reference.on('child_added', function(childSnapshot, prevChildKey) {
+        if (prevChildKey == null)
+            prevChildKey = "0";
+
+        addChild(committee + '/' + topic + '/' + childSnapshot.val(), parseInt(childSnapshot.key), listName);
+    });
+
+    //change an item's text when the value of the corresponding child is changed in the database
+    reference.on('child_changed', function(childSnapshot, prevChildKey) {
+        if (prevChildKey == null)
+            prevChildKey = "0";
+
+        changeChild(committee + '/' + topic + '/' + childSnapshot.val(), parseInt(childSnapshot.key)-1, listName);
+    });
+
+    //remove an item when the corresponding child is removed from the database
+    reference.on('child_removed', function(oldChildSnapshot) {
+        removeChild(parseInt(oldChildSnapshot.key-1), listName);
+    });
+}
+
 function listenAPanel() {
 	var list = document.getElementById("resList_aPanel");
 	
-	var dRef = firebase.database().ref().child("D");
-	
-	dRef.on("child_added", function(snapshot, prevChildKey) {
+	firebase.database().ref().child('D').on("child_added", function(snapshot, prevChildKey) {
 		if (snapshot.key.toString() != "counter") {
 			var item = document.createElement("option");
-			item.text = "ID: " + snapshot.child("n").val();
+			item.text = "ID: " + snapshot.key;
 			
-			list.add(item, snapshot.child("n").val()-1);
+			list.add(item, parseInt(snapshot.key)-1);
 		}
 	});
 }
@@ -337,15 +295,28 @@ function listenAPanel() {
 function listenANumber() {
 	var list = document.getElementById("resList_aNumber");
 	
-	var aRef = firebase.database().ref().child("A_Panel");
-	
-	aRef.on("child_added", function(snapshot, prevChildKey) {
+	firebase.database().ref().child("A_Panel").on("child_added", function(snapshot, prevChildKey) {
 		if (snapshot.key.toString() != "counter") {
 			var item = document.createElement("option");
 			item.text = "ID: " + snapshot.key;
 			
 			list.add(item, parseInt(snapshot.key) -1);
 		}
+	});
+}
+
+function listenGaUpload() {
+	var list = document.getElementById("resList_GaRegistration");
+	
+	firebase.database().ref().child("ga").on("child_added", function(snapshot) {
+		firebase.database().ref().child("metadata").child(snapshot.val()).child("ga").once("value", function(innerSnapshot) {
+			if (innerSnapshot.val() == "approved") {
+				var item = document.createElement("option");
+				item.text = "ID " + snapshot.key;
+				
+				list.add(item, parseInt(snapshot.key) -1)
+			}
+		});
 	});
 }
 
@@ -357,6 +328,8 @@ function init() {
 	document.getElementById("resRegistered_msg4").style.visibility = "hidden";
 	document.getElementById("resRegistered_msg5").style.visibility = "hidden";
 	document.getElementById("resRegistered_msg6").style.visibility = "hidden";
+	document.getElementById("GaResRegistered_msg").style.visibility = "hidden";
+	document.getElementById("GaResRegistered_msg4").style.visibility = "hidden";
 
     //add listener to the logout button
     document.getElementById("logout_link").onclick = function () {
@@ -398,36 +371,22 @@ function init() {
     
     listenAPanel();
     listenANumber();
+    listenGaUpload();
     
-    //add listener to the "register" button
-    var register_link = document.getElementById("register_link");
-    register_link.onclick = function() {
-        register();
-        
-        //make sure the default link behaviour isn't followed
-        return false;
-    }
+    //get the selected file
+    var file = null;
+    document.getElementById("fileChooser_aNumber").addEventListener('change', function(e) {
+        file = e.target.files[0];
+    });
     
-    //add listener to the a-panel "submit" button
-    var aPanel_link = document.getElementById("aPanel_link");
-    aPanel_link.onclick = function() {
-        submit_aPanel();
-        
-        //make sure the default link behaviour isn't followed
-        return false;
-    }
-    
-    //add listener to the a-number "submit" button
-    var aNumber_link = document.getElementById("aNumber_link");
-    aNumber_link.onclick = function() {
-        submit_aNumber();
-        
-        //make sure the default link behaviour isn't followed
-        return false;
-    }
+    //get the selected file for the GA
+    var GaFile = null;
+    document.getElementById("GaFileChooser").addEventListener('change', function(e) {
+        GaFile = e.target.files[0];
+    });
     
     //set the 'Next ID' label
-    firebase.database().ref().child("D").child("counter").on("value", function(snapshot) {
+    firebase.database().ref().child('D').child("counter").on("value", function(snapshot) {
     	var counter = 1;
     	
     	if (snapshot.exists())
@@ -436,6 +395,40 @@ function init() {
     	document.getElementById("next_id_txt").innerHTML = counter.toString();
     	
     });
+    
+    //-------- Button/Link - listeners --------
+    
+    //register
+    document.getElementById("register_link").onclick = function() {
+        register();
+        
+        //make sure the default link behaviour isn't followed
+        return false;
+    }
+    
+    //aPanel
+    document.getElementById("aPanel_link").onclick = function() {
+    	submit_aPanel();
+        
+        //make sure the default link behaviour isn't followed
+        return false;
+    }
+    
+    //aNumber
+    document.getElementById("aNumber_link").onclick = function() {
+        submit_aNumber(file);
+        
+        //make sure the default link behaviour isn't followed
+        return false;
+    }
+    
+    //GA - upload
+    document.getElementById("GaRegistration_link").onclick = function() {
+    	gaUpload(GaFile);
+    	
+    	//make sure the default link behaviour isn't followed
+    	return false;
+    };
 }
 
 window.onload = init;

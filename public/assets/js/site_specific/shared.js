@@ -1,27 +1,92 @@
-function getStudentOfficer(committee) {
-    if (committee == "political") {
-        return "Special Political and Decolonization Committee";
-    } else if (committee == "disarmament") {
-        return "Disarmament and International Security Committee";
-    } else if (committee == "humanitarian") {
-        return "Social, Humanitarian and Cultural Committee";
-    } else if (committee == "ernvironmental") {
-        return "Environmental Committee";
-    } else {
-        return "An error occurred";
+//takes the the text of a select-option as an argument and returns only the relevant part for download (only the resolution name and topic - without the id)
+function getRelevant(itemValue) {
+    var result = "";
+
+    var writing = false;
+
+    for (i = 0; i < itemValue.length; i++) {
+        if (!writing) {
+            if (itemValue.charAt(i) == ':') {
+                i++;
+                writing = true;
+            }
+        } else {
+            result += itemValue.charAt(i);
+        }
     }
+
+    return result;
 }
 
-function getFullCommitteeName(committee) {
-    if (committee == "political") {
-        return "[tbd] - political";
-    } else if (committee == "disarmament") {
-        return "[tbd] - disarmament";
-    } else if (committee == "humanitarian") {
-        return "[tbd] - humanitarian";
-    } else if (committee == "ernvironmental") {
-        return "[tbd] - environmental";
-    } else {
-        return "An error occurred";
+//extract just the committee of a string of the form: "[committee]/[topic]/[name]"
+function getCommittee(txt) {
+    var result= "";
+    
+    for (i = 0; i < txt.length; i++) {
+        if (txt.charAt(i) == '/')
+            break;
+        
+        result += txt.charAt(i);
     }
+    
+    return result;
+}
+
+//extract just the name of a string of the form: "[committee]/[topic]/[name]"
+function getName(txt) {
+    var result= "";
+    
+    var writing = 0;
+    
+    for (i = 0; i < txt.length; i++) {
+        if (writing < 2) {
+            if (txt.charAt(i) == '/')
+                writing++;
+        } else {
+            result += txt.charAt(i);
+        }
+    }
+    
+    return result;
+}
+
+//extract just the topic of a string of the form: "[committee]/[topic]/[name]"
+function getTopic(txt) {
+    var result= "";
+    
+    var writing = false;
+    
+    for (i = 0; i < txt.length; i++) {
+        if (!writing) {
+            if (txt.charAt(i) == '/')
+                writing = true;
+        } else {
+        	if (txt.charAt(i) == '/')
+        		break;
+            result += txt.charAt(i);
+        }
+    }
+    
+    return result;
+}
+
+//takes the value of a select-option (form: "Resolution [id]: [topic]/[name]") as an argument and returns the id
+function getId(txt) {
+    var result = "";
+    
+   	var writing = false;
+    
+    for (i = 0; i < txt.length; i++) {
+        if (!writing) {
+            if (txt.charAt(i) == ' ')
+                writing = true;
+        } else {
+            if (txt.charAt(i) == ':')
+                break;
+            else
+                result += txt.charAt(i);
+        }
+    }
+
+    return parseInt(result);
 }
