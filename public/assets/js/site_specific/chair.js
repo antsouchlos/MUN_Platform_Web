@@ -1,6 +1,7 @@
 //global variables
 var resList_ids = [];
 var notRegistered = 0;
+var prevID = 0;
 
 function uploadDateAndTime(id) {   
     var currentDate = new Date();
@@ -71,8 +72,16 @@ function check() {
         var gaRef = metaReference.child("ga");
         
         
+        //detach listeners
+        firebase.database().ref().child("metadata").child(prevID).child("id").off();
+        firebase.database().ref().child("metadata").child(prevID).child("uploaded").off();
+        firebase.database().ref().child("metadata").child(prevID).child("registered").off();
+        firebase.database().ref().child("metadata").child(prevID).child("aPanel").off();
+        firebase.database().ref().child("metadata").child(prevID).child("aNumber").off();
+        firebase.database().ref().child("metadata").child(prevID).child("ga").off();
+        
         //ID
-        firebase.database().ref().child("metadata").child(id).child("id").once("value", function (snapshot) {
+        firebase.database().ref().child("metadata").child(id).child("id").on("value", function (snapshot) {
         	if (snapshot.exists())
             	document.getElementById("id_txt").innerHTML = snapshot.val().toString();
         	else 
@@ -80,7 +89,7 @@ function check() {
         });
         
         //upload time
-        uploadedRef.once("value", function (snapshot) {
+        uploadedRef.on("value", function (snapshot) {
         	if (snapshot.exists())
         		document.getElementById("uploaded_txt").innerHTML = snapshot.val();
         	else 
@@ -88,7 +97,7 @@ function check() {
         });
         
         //archived time
-        registeredRef.once("value", function (snapshot) {
+        registeredRef.on("value", function (snapshot) {
         	if (snapshot.exists())
         		document.getElementById("archived_txt").innerHTML = snapshot.val();
         	else 
@@ -97,7 +106,7 @@ function check() {
         });
         
         //approval time
-        aPanelRef.once("value", function (snapshot) {
+        aPanelRef.on("value", function (snapshot) {
         	if (snapshot.exists())
         		document.getElementById("approval_txt").innerHTML = snapshot.val();
         	else 
@@ -105,7 +114,7 @@ function check() {
         });
         
         //aNumber time
-        aNumberRef.once("value", function (snapshot) {
+        aNumberRef.on("value", function (snapshot) {
         	if (snapshot.exists())
         		document.getElementById("aNumber_txt").innerHTML = snapshot.val();
         	else 
@@ -113,7 +122,7 @@ function check() {
         });
         
         //debate status
-        debateRef.once("value", function(snapshot) {
+        debateRef.on("value", function(snapshot) {
         	if (snapshot.exists())
         		document.getElementById("debate_txt").innerHTML = snapshot.val();
         	else 
@@ -121,15 +130,14 @@ function check() {
         });
         
         //ga status
-        gaRef.once("value", function(snapshot) {
+        gaRef.on("value", function(snapshot) {
         	if (snapshot.exists())
         		document.getElementById("GA_txt").innerHTML = snapshot.val();
         	else 
         		document.getElementById("GA_txt").innerHTML = "pending";
         });
         
-        
-
+        prevID = id;
     } else {
         //alert("You must choose a resolution to check");
     }
