@@ -48,13 +48,13 @@ function hideUIElements() {
 }
 
 //gets called when the selected element of the "chek" select box changes
-//TODO: make sure the 'check' function gets called every time, even if the selection doesn't change
 function check() {
 	document.getElementById("uploaded_txt").innerHTML = "";
 	document.getElementById("archived_txt").innerHTML = "";
 	document.getElementById("approoval_txt").innerHTML = "";
 	document.getElementById("aNumber_txt").innerHTML = "";
 	document.getElementById("debate_txt").innerHTML = "";
+	document.getElementById("GA_txt").innerHTML = "";
 	
     var resList = document.getElementById("resList");
 
@@ -335,6 +335,7 @@ function listen(reference, topic, listName) {
         		id = snapshot.val();
         	
             addChild(parseInt(childSnapshot.key), ': ' + topic + '/' + childSnapshot.val(), id, listName);
+            check();
         });
     });
 }
@@ -418,7 +419,7 @@ function init() {
         }
     });
     
-    check();
+    //check();
     
     //get the selected file
     var file = null;
