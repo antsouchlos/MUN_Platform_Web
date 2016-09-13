@@ -51,7 +51,7 @@ function hideUIElements() {
 function check() {
 	document.getElementById("uploaded_txt").innerHTML = "";
 	document.getElementById("archived_txt").innerHTML = "";
-	document.getElementById("approoval_txt").innerHTML = "";
+	document.getElementById("approval_txt").innerHTML = "";
 	document.getElementById("aNumber_txt").innerHTML = "";
 	document.getElementById("debate_txt").innerHTML = "";
 	document.getElementById("GA_txt").innerHTML = "";
@@ -70,43 +70,62 @@ function check() {
         var debateRef = metaReference.child("debate");
         var gaRef = metaReference.child("ga");
         
-        uploadedRef.once("value", function (snapshot) {
-        	if (snapshot.exists())
-        		document.getElementById("uploaded_txt").innerHTML = snapshot.val();
-        });
         
-        registeredRef.once("value", function (snapshot) {
-        	if (snapshot.exists())
-        		document.getElementById("archived_txt").innerHTML = snapshot.val();
-
-        });
-        
+        //ID
         firebase.database().ref().child("metadata").child(id).child("id").once("value", function (snapshot) {
         	if (snapshot.exists())
             	document.getElementById("id_txt").innerHTML = snapshot.val().toString();
         	else 
-        		document.getElementById("id_txt").innerHTML = "Resolution not yet registered";
-    	
+        		document.getElementById("id_txt").innerHTML = "pending";
         });
         
+        //upload time
+        uploadedRef.once("value", function (snapshot) {
+        	if (snapshot.exists())
+        		document.getElementById("uploaded_txt").innerHTML = snapshot.val();
+        	else 
+        		document.getElementById("uploaded_txt").innerHTML = "pending";
+        });
+        
+        //archived time
+        registeredRef.once("value", function (snapshot) {
+        	if (snapshot.exists())
+        		document.getElementById("archived_txt").innerHTML = snapshot.val();
+        	else 
+        		document.getElementById("archived_txt").innerHTML = "pending";
+
+        });
+        
+        //approval time
         aPanelRef.once("value", function (snapshot) {
         	if (snapshot.exists())
-        		document.getElementById("approoval_txt").innerHTML = snapshot.val();
+        		document.getElementById("approval_txt").innerHTML = snapshot.val();
+        	else 
+        		document.getElementById("approval_txt").innerHTML = "pending";
         });
         
+        //aNumber time
         aNumberRef.once("value", function (snapshot) {
         	if (snapshot.exists())
         		document.getElementById("aNumber_txt").innerHTML = snapshot.val();
+        	else 
+        		document.getElementById("aNumber_txt").innerHTML = "pending";
         });
         
+        //debate status
         debateRef.once("value", function(snapshot) {
         	if (snapshot.exists())
         		document.getElementById("debate_txt").innerHTML = snapshot.val();
+        	else 
+        		document.getElementById("debate_txt").innerHTML = "pending";
         });
         
+        //ga status
         gaRef.once("value", function(snapshot) {
         	if (snapshot.exists())
         		document.getElementById("GA_txt").innerHTML = snapshot.val();
+        	else 
+        		document.getElementById("GA_txt").innerHTML = "pending";
         });
         
         
