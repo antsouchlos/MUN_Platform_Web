@@ -2,6 +2,8 @@
 var resList_ids = [];
 var notRegistered = 0;
 var prevID = 0;
+var prevIDListen = 0;
+var currentCommittee = null;
 
 function uploadDateAndTime(id) {   
     var currentDate = new Date();
@@ -72,7 +74,7 @@ function check() {
         var gaRef = metaReference.child("ga");
         
         
-        //detach listeners
+        //detach previous listeners
         firebase.database().ref().child("metadata").child(prevID).child("id").off();
         firebase.database().ref().child("metadata").child(prevID).child("uploaded").off();
         firebase.database().ref().child("metadata").child(prevID).child("registered").off();
@@ -218,6 +220,7 @@ function upload(committee, file) {
                         //add the new resolution to the database
                         firebase.database().ref().child("resolutions").child(committee).child(topic).child(counter).set(resName);
                         uploadDateAndTime(counter, "uploaded");
+                        firebase.database().ref().child("committees").child(counter).set(committee);
                         
                         //update the counter
                         counterRef.set(counter);
@@ -258,10 +261,13 @@ function submitDebateStatus() {
     	        
     	        firebase.database().ref().child("debate").child(getId(resList2.options[resList2.selectedIndex].value)).set(resList_ids[getId(resList2.options[resList2.selectedIndex].value)-1]);
     	        document.getElementById("debateMsg3").style.visibility = "visible";
+    	        
+    	        //make the resolution unavailable for further debate-status sbmissions
+    	        firebase.database().ref().child("A_Number").child(getId(resList2.options[resList2.selectedIndex].value)).remove();
         	}
         });
 	} else {
-		//alert("You must choose a resolution to update its debate status");
+		alert("You must choose a resolution to update its debate status");
 	}
 }
 
@@ -295,6 +301,9 @@ function submitGaStatus() {
 		    	        
 		    	        firebase.database().ref().child("ga").child(getId(resList3.options[resList3.selectedIndex].value)).set(originalId);
 		    	        document.getElementById("GaMsg3").style.visibility = "visible";
+		    	        
+		    	        //make the resolution unavailable for further ga-status submissions
+		    	        firebase.database().ref().child("debate").child(getId(resList3.options[resList3.selectedIndex].value)).remove();
 		        	}
 		        });
 			} else {
@@ -325,7 +334,7 @@ function addChild(originalId, name, id, listName) {
     	
 }
 
-function changeChild(name, id, listName) {
+function changeChild(name, index, id, listName) {
     var list = document.getElementById(listName);
     var item = document.createElement("option");
 
@@ -339,13 +348,13 @@ function changeChild(name, id, listName) {
     	
     item.text += " " + name;
 
-    list.remove(id -1 + notRegistered);
-    list.add(item, id -1 + notRegistered);
+    list.remove(index);
+    list.add(item, index);
 }
 
 function removeChild(index, listName) {
-    var list = document.getElementById(listName);
-    list.remove(index);
+	alert(index);
+	document.getElementById(listName).remove(index);
 }
 
 //listen for changes to the children of "reference" and update "resList" accordingly
@@ -361,8 +370,17 @@ function listen(reference, topic, listName) {
         	if (snapshot.exists())
         		id = snapshot.val();
         	
-            addChild(parseInt(childSnapshot.key), ': ' + topic + '/' + childSnapshot.val(), id, listName);
+            addChild(parseInt(childSnapshot.key), ": " + topic + '/' + childSnapshot.val(), id, listName);
+            
             check();
+            
+            //attach a listener, so that the id gets updated in realtime if the resolution gets registered
+            if (id == -1) {
+            	firebase.database().ref().child("metadata").child(parseInt(childSnapshot.key)).child("id").on("value", function (innerSnapshot) {
+            		if (innerSnapshot.val() != null)
+            			changeChild(": " + topic + '/' + childSnapshot.val(), resList_ids.indexOf(parseInt(childSnapshot.key)), innerSnapshot.val(), "resList")
+            	});
+            }
         });
     });
 }
@@ -370,15 +388,31 @@ function listen(reference, topic, listName) {
 //like 'listen()', but only displays resolutions ready to have a debate status
 function debateListen(listName) {
 	firebase.database().ref().child("A_Number").on("child_added", function(snapshot) {
-		addChild(snapshot.val(), "", parseInt(snapshot.key), listName);
+		firebase.database().ref().child("committees").child(snapshot.val()).once("value", function(innerSnapshot) {
+			if (innerSnapshot.val() == currentCommittee)
+				addChild(snapshot.val(), "", parseInt(snapshot.key), listName);	
+		});
 	});
-}
+	
+	firebase.database().ref().child("A_Number").on("child_removed", function(snapshot) {
+		firebase.database().ref().child("committees").child(parseInt(snapshot.key)).once("value", function(innerSnapshot) {
+			alert(document.getElementById("resList").options.indexOf("ID " + parseInt(snapshot.key)));
+			if (innerSnapshot.val() == currentCommittee) {
+				removeChild(document.getElementById("resList").options.indexOf("ID " + parseInt(snapshot.key)), "resList");
+			}
+		});
+	});
+};
 
 function gaStatusListen(listName) {
     firebase.database().ref().child("debate").on("child_added", function (snapshot) {
     	firebase.database().ref().child("metadata").child(snapshot.val()).child("debate").once("value", function(innerSnapshot) {
-    		if (innerSnapshot.val() == "passed")
-    			addChild(snapshot.val(), "", parseInt(snapshot.key), listName);
+    		if (innerSnapshot.val() == "passed") {
+    			firebase.database().ref().child("committees").child(snapshot.val()).once("value", function(innerSnapshot2) {
+    				if (innerSnapshot2.val() == currentCommittee)
+    					addChild(snapshot.val(), "", parseInt(snapshot.key), listName);	
+    			});
+    		}
     	});
     });
 }
@@ -386,8 +420,12 @@ function gaStatusListen(listName) {
 function gaDownloadListen(listName) {
 	firebase.database().ref().child("ga").on("child_added", function(snapshot) {
 		firebase.database().ref().child("metadata").child(snapshot.val()).child("ga").once("value", function(innerSnapshot) {
-			if (innerSnapshot.val() == "approved")
-				addChild(snapshot.val(), "", parseInt(snapshot.key), listName);
+			if (innerSnapshot.val() == "approved") {
+    			firebase.database().ref().child("committees").child(snapshot.val()).once("value", function(innerSnapshot2) {
+    				if (innerSnapshot2.val() == currentCommittee)
+    					addChild(snapshot.val(), "", parseInt(snapshot.key), listName);	
+    			});
+			}
 		});
 	});
 }
@@ -411,8 +449,6 @@ function startListeners(committee) {
 
 function init() {
 	hideUIElements();
-	
-    var currentCommittee = "null";
     
     var fired = false;
     firebase.auth().onAuthStateChanged(firebaseUser => {
@@ -445,8 +481,6 @@ function init() {
             startListeners(currentCommittee);
         }
     });
-    
-    //check();
     
     //get the selected file
     var file = null;

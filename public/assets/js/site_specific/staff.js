@@ -157,9 +157,8 @@ function register() {
 				var counter = 1;
 				
 				dRef.child("counter").once("value", function (snapshot) {
-					if (snapshot.exists()) {
+					if (snapshot.exists())
 						counter = snapshot.val();
-					}
 					
 					var resRef = dRef.child(counter);
 
