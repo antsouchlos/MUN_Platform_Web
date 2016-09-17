@@ -174,7 +174,7 @@ function gaDownload() {
         var selectedItem = list.options[list.selectedIndex].text;
         
         //download the file
-        firebase.storage().ref().child("A").child(getId(selectedItem).toString()).getDownloadURL().then(function(url) {
+        firebase.storage().ref().child("GA").child(getId(selectedItem).toString()).getDownloadURL().then(function(url) {
             document.location.href = url;
         }).catch(function(error) {
             alert("An error occurred while downloading file");
@@ -444,6 +444,16 @@ function gaStatusListen(listName) {
     			});
     		}
     	});
+    });
+    
+    firebase.database().ref().child("debate").on("child_removed", function (snapshot) {
+		var list = document.getElementById(listName).options;
+		var optionList = [];
+		
+		for (i = 0; i < list.length; i++)
+			optionList.push(list[i].value);
+		
+		removeChild(optionList.indexOf("ID " + parseInt(snapshot.key)), listName);
     });
 }
 
