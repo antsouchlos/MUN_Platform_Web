@@ -222,7 +222,7 @@ function submit_aNumber(file) {
 		if (file != null) {
 			var id = parseInt(getRelevant(list[list.selectedIndex].text));
 			
-			firebase.database().ref().child("A_Number").child(id).once("value", function(snapshot) {
+			firebase.database().ref().child("A_Number_Download").child(id).once("value", function(snapshot) {
 				if (!snapshot.exists()) {
 			        var storageRef = firebase.storage().ref("A/" + id);
 			        
@@ -236,6 +236,7 @@ function submit_aNumber(file) {
 								var originalId = innerSnapshot.val();
 								
 								firebase.database().ref().child("A_Number").child(id).set(originalId);
+								firebase.database().ref().child("A_Number_Download").child(id).set(originalId);
 								firebase.database().ref().child("metadata").child(parseInt(id)).child("aNumber").set(getDateAndTime());
 								
 								document.getElementById("resRegistered_msg6").style.visibility = "visible";
@@ -320,7 +321,6 @@ function listenGaUpload() {
 }
 
 function init() {
-	
 	document.getElementById("resRegistered_msg").style.visibility = "hidden";
 	document.getElementById("resRegistered_msg2").style.visibility = "hidden";
 	document.getElementById("resRegistered_msg3").style.visibility = "hidden";
@@ -329,6 +329,9 @@ function init() {
 	document.getElementById("resRegistered_msg6").style.visibility = "hidden";
 	document.getElementById("GaResRegistered_msg").style.visibility = "hidden";
 	document.getElementById("GaResRegistered_msg4").style.visibility = "hidden";
+	
+	document.getElementById("fileChooser_aNumber").value = "";
+	document.getElementById("GaFileChooser").value = "";
 
     //add listener to the logout button
     document.getElementById("logout_link").onclick = function () {

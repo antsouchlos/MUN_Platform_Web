@@ -75,7 +75,7 @@ function check() {
         
         
         //detach previous listeners
-        firebase.database().ref().child("metadata").child(prevID).child("id").off();
+        //firebase.database().ref().child("metadata").child(prevID).child("id").off();
         firebase.database().ref().child("metadata").child(prevID).child("uploaded").off();
         firebase.database().ref().child("metadata").child(prevID).child("registered").off();
         firebase.database().ref().child("metadata").child(prevID).child("aPanel").off();
@@ -84,9 +84,10 @@ function check() {
         
         //ID
         firebase.database().ref().child("metadata").child(id).child("id").on("value", function (snapshot) {
-        	if (snapshot.exists())
+        	if (snapshot.exists()) {
             	document.getElementById("id_txt").innerHTML = snapshot.val().toString();
-        	else 
+            	firebase.database().ref().child("metadata").child(id).child("id").off();
+        	} else 
         		document.getElementById("id_txt").innerHTML = "pending";
         });
         
@@ -353,7 +354,6 @@ function changeChild(name, index, id, listName) {
 }
 
 function removeChild(index, listName) {
-	alert(index);
 	document.getElementById(listName).remove(index);
 }
 
@@ -385,24 +385,42 @@ function listen(reference, topic, listName) {
     });
 }
 
-//like 'listen()', but only displays resolutions ready to have a debate status
+function printList(list) {
+	for (i = 0; i< list.length; i++)
+		alert(list[i].value);
+}
+
 function debateListen(listName) {
 	firebase.database().ref().child("A_Number").on("child_added", function(snapshot) {
 		firebase.database().ref().child("committees").child(snapshot.val()).once("value", function(innerSnapshot) {
-			if (innerSnapshot.val() == currentCommittee)
-				addChild(snapshot.val(), "", parseInt(snapshot.key), listName);	
-		});
-	});
-	
-	firebase.database().ref().child("A_Number").on("child_removed", function(snapshot) {
-		firebase.database().ref().child("committees").child(parseInt(snapshot.key)).once("value", function(innerSnapshot) {
-			alert(document.getElementById("resList").options.indexOf("ID " + parseInt(snapshot.key)));
 			if (innerSnapshot.val() == currentCommittee) {
-				removeChild(document.getElementById("resList").options.indexOf("ID " + parseInt(snapshot.key)), "resList");
+				addChild(snapshot.val(), "", parseInt(snapshot.key), listName);	
 			}
 		});
 	});
+	
+	var n = 0;
+	
+	firebase.database().ref().child("A_Number").on("child_removed", function(snapshot) {
+			var list = document.getElementById(listName).options;
+			var optionList = [];
+			
+			for (i = 0; i < list.length; i++)
+				optionList.push(list[i].value);
+			
+			removeChild(optionList.indexOf("ID " + parseInt(snapshot.key)), listName);
+	});
 };
+
+function aNumDownloadListen(listName) {
+	firebase.database().ref().child("A_Number_Download").on("child_added", function(snapshot) {
+		firebase.database().ref().child("committees").child(snapshot.val()).once("value", function(innerSnapshot) {
+			if (innerSnapshot.val() == currentCommittee) {
+				addChild(snapshot.val(), "", parseInt(snapshot.key), listName);	
+			}
+		});
+	});
+}
 
 function gaStatusListen(listName) {
     firebase.database().ref().child("debate").on("child_added", function (snapshot) {
@@ -440,7 +458,7 @@ function startListeners(committee) {
 	
     debateListen("resList2");
     
-    debateListen("AnumList");
+    aNumDownloadListen("AnumList");
     
     gaStatusListen("resList3");
     
