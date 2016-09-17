@@ -4,6 +4,7 @@ var notRegistered = 0;
 var prevID = 0;
 var prevIDListen = 0;
 var currentCommittee = null;
+var uploading = false;
 
 function uploadDateAndTime(id) {   
     var currentDate = new Date();
@@ -41,6 +42,7 @@ function hideUIElements() {
     //document.getElementById("debateMsg2").style.visibility = "hidden";
     document.getElementById("debateMsg3").style.visibility = "hidden";
     document.getElementById("GaMsg3").style.visibility = "hidden";
+    document.getElementById("uploadPercentage").style.visibility = "hidden";
     
     //reset the elements
     document.getElementById("fileChooser").value = "";
@@ -185,6 +187,8 @@ function gaDownload() {
 function upload(committee, file) {
     var topicView = document.getElementById("topicView");
     var resName = document.getElementById("resName").value;
+    
+    document.getElementById("uploadPercentage").style.visibility = "hidden";
 
     if (committee != "null") {
         document.getElementById("msg_text").style.visibility = "hidden";
@@ -201,9 +205,15 @@ function upload(committee, file) {
 
             var storageRef = firebase.storage().ref("resolutions/" + committee + "/" + topic + "/" + resName);
 
+            document.getElementById("uploadPercentage").style.visibility = "visible";
+
             //upload file
             storageRef.put(file).on('state_changed',
-                function progress(snapshot) {},
+                function progress(snapshot) {
+            		var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            		document.getElementById("uploadPercentage").innerHTML = percentage + "%";
+            	},
+            	
                 function error(err) {},
 
                 function complete() {
@@ -226,6 +236,8 @@ function upload(committee, file) {
                         //update the counter
                         counterRef.set(counter);
                     });
+                    
+                    uploading = false;
                 }
             );
         }
@@ -509,8 +521,15 @@ function init() {
     //-------- Button/Link - listeners --------
     
     //upload
+    
     document.getElementById("upload_link").onclick = function() {
-    	upload(currentCommittee, file);
+    	if (!uploading) {
+    		uploading = true;
+    		
+        	upload(currentCommittee, file);
+    	} else {
+    		alert("Please wait until the current file is uploaded");
+    	}
         
         //make sure the default link behaviour doesn't happen
         return false;
