@@ -502,18 +502,78 @@ function init() {
             if (email == "political@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Special Political and Decolonization Committee";
+                
+                var list = document.getElementById("topicView");
+                
+                var option1 = document.createElement("option");
+                var option2 = document.createElement("option");
+                var option3 = document.createElement("option");
+                
+                option1.text = "Eliminating the funding of ISIL via anti-money laundering strategies";
+                option2.text = "The question of the alleged Tamile genocide in Sri Lanka";
+                option3.text = "Achieving border security and provision of quotas to political asylum seekers and refugees within the premises of the European Union (EU)";
+                
+                list.add(option1);
+                list.add(option2);
+                list.add(option3);
+                
                 currentCommittee = "political";
             } else if (email == "disarmament@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Disarmament and International Security Commitee";
+                
+                var list = document.getElementById("topicView");
+                
+                var option1 = document.createElement("option");
+                var option2 = document.createElement("option");
+                var option3 = document.createElement("option");
+                
+                option1.text = "Reestablishing the criteria under which a country engages into war (jus ad bellum) and the Laws of War (jus in bello)";
+                option2.text = "The issue of the denuclearization of the Korean peninsula";
+                option3.text = "Strengthening international cooperation to counteract terrorist action of ISIS";
+                
+                list.add(option1);
+                list.add(option2);
+                list.add(option3);
+                
                 currentCommittee = "disarmament";
             } else if (email == "humanitarian@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Social, Humanitarian and Cultural Committee";
+                
+                var list = document.getElementById("topicView");
+                
+                var option1 = document.createElement("option");
+                var option2 = document.createElement("option");
+                var option3 = document.createElement("option");
+                
+                option1.text = "Combating social conflicts and the growing far right ideology in refugee - hosting countries";
+                option2.text = "Establishing global minimum working condition standards";
+                option3.text = "Tackling the issue of child marriage and child grooming";
+                
+                list.add(option1);
+                list.add(option2);
+                list.add(option3);
+                
                 currentCommittee = "humanitarian";
             } else if (email == "environmental@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Environmental Committee";
+                
+                var list = document.getElementById("topicView");
+                
+                var option1 = document.createElement("option");
+                var option2 = document.createElement("option");
+                var option3 = document.createElement("option");
+                
+                option1.text = "Bio application of nanomaterials and their consequences on human health and the environment";
+                option2.text = "Preventing the degradation of maritime environment due to off shore oil mining";
+                option3.text = "Finding long term solutions for waste management in LEDCs";
+                
+                list.add(option1);
+                list.add(option2);
+                list.add(option3);
+                
                 currentCommittee = "environmental";
             }
         	
