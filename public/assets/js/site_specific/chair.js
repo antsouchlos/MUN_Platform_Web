@@ -6,6 +6,8 @@ var prevIDListen = 0;
 var currentCommittee = null;
 var uploading = false;
 
+var topics = [];
+
 function uploadDateAndTime(id) {   
     var currentDate = new Date();
     var dateAndTime = "";
@@ -397,11 +399,6 @@ function listen(reference, topic, listName) {
     });
 }
 
-function printList(list) {
-	for (i = 0; i< list.length; i++)
-		alert(list[i].value);
-}
-
 function debateListen(listName) {
 	firebase.database().ref().child("A_Number").on("child_added", function(snapshot) {
 		firebase.database().ref().child("committees").child(snapshot.val()).once("value", function(innerSnapshot) {
@@ -473,10 +470,8 @@ function gaDownloadListen(listName) {
 function startListeners(committee) {
     const resolutionRef = firebase.database().ref().child("resolutions").child(committee);
     
-    listen(resolutionRef.child("topic 1"), "topic 1", "resList");
-    listen(resolutionRef.child("topic 2"), "topic 2", "resList");
-    listen(resolutionRef.child("topic 3"), "topic 3", "resList");
-    listen(resolutionRef.child("topic 4"), "topic 4", "resList");
+    for (i = 0; i < topics.length; i++)
+    	listen(resolutionRef.child(topics[i]), topics[i], "resList");
 	
     debateListen("resList2");
     
@@ -503,76 +498,60 @@ function init() {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Special Political and Decolonization Committee";
                 
+                topics = poliTopics;
+                
                 var list = document.getElementById("topicView");
                 
-                var option1 = document.createElement("option");
-                var option2 = document.createElement("option");
-                var option3 = document.createElement("option");
-                
-                option1.text = "Eliminating the funding of ISIL via anti-money laundering strategies";
-                option2.text = "The question of the alleged Tamile genocide in Sri Lanka";
-                option3.text = "Achieving border security and provision of quotas to political asylum seekers and refugees within the premises of the European Union (EU)";
-                
-                list.add(option1);
-                list.add(option2);
-                list.add(option3);
+                for (i = 0; i < list.length; i++) {
+                	var option = document.createElement("option");
+                	option.text = topics[i];
+                	list.add(option);
+                }
                 
                 currentCommittee = "political";
             } else if (email == "disarmament@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Disarmament and International Security Commitee";
                 
+                topics = disaTopics;
+                
                 var list = document.getElementById("topicView");
                 
-                var option1 = document.createElement("option");
-                var option2 = document.createElement("option");
-                var option3 = document.createElement("option");
-                
-                option1.text = "Reestablishing the criteria under which a country engages into war (jus ad bellum) and the Laws of War (jus in bello)";
-                option2.text = "The issue of the denuclearization of the Korean peninsula";
-                option3.text = "Strengthening international cooperation to counteract terrorist action of ISIS";
-                
-                list.add(option1);
-                list.add(option2);
-                list.add(option3);
+                for (i = 0; i < list.length; i++) {
+                	var option = document.createElement("option");
+                	option.text = topics[i];
+                	list.add(option);
+                }
                 
                 currentCommittee = "disarmament";
             } else if (email == "humanitarian@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Social, Humanitarian and Cultural Committee";
                 
+                topics = humaTopics;
+                
                 var list = document.getElementById("topicView");
                 
-                var option1 = document.createElement("option");
-                var option2 = document.createElement("option");
-                var option3 = document.createElement("option");
-                
-                option1.text = "Combating social conflicts and the growing far right ideology in refugee - hosting countries";
-                option2.text = "Establishing global minimum working condition standards";
-                option3.text = "Tackling the issue of child marriage and child grooming";
-                
-                list.add(option1);
-                list.add(option2);
-                list.add(option3);
+                for (i = 0; i < list.length; i++) {
+                	var option = document.createElement("option");
+                	option.text = topics[i];
+                	list.add(option);
+                }
                 
                 currentCommittee = "humanitarian";
             } else if (email == "environmental@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Environmental Committee";
                 
+                topics = enviTopics;
+              
                 var list = document.getElementById("topicView");
                 
-                var option1 = document.createElement("option");
-                var option2 = document.createElement("option");
-                var option3 = document.createElement("option");
-                
-                option1.text = "Bio application of nanomaterials and their consequences on human health and the environment";
-                option2.text = "Preventing the degradation of maritime environment due to off shore oil mining";
-                option3.text = "Finding long term solutions for waste management in LEDCs";
-                
-                list.add(option1);
-                list.add(option2);
-                list.add(option3);
+                for (i = 0; i < list.length; i++) {
+                	var option = document.createElement("option");
+                	option.text = topics[i];
+                	list.add(option);
+                }
                 
                 currentCommittee = "environmental";
             }

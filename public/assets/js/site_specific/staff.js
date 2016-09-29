@@ -351,24 +351,20 @@ function init() {
         return false;
     }
     
-    var committee_array = ["environmental", "humanitarian", "political", "disarmament"];
-    
     const resolutionRef = firebase.database().ref().child('resolutions');
     
-    for (i = 0; i < 4; i++) {
-    	var committeeRef = resolutionRef.child(committee_array[i]);
-        listen(committeeRef.child("topic 1"), "topic 1", committee_array[i], "resList");
-        listen(committeeRef.child("topic 2"), "topic 2", committee_array[i], "resList");
-        listen(committeeRef.child("topic 3"), "topic 3", committee_array[i], "resList");
-        listen(committeeRef.child("topic 4"), "topic 4", committee_array[i], "resList");
+    for (i = 0; i < allTopics.length; i++) {
+    	for (ii = 0; ii < allTopics[i].length; ii++) {
+        	var committeeRef = resolutionRef.child(committee_array[i]);
+    		listen(committeeRef.child(allTopics[i][ii]), allTopics[i][ii], committee_array[i], "resList");
+    	}
     }
     
-    for (i = 0; i < 4; i++) {
-    	var committeeRef = resolutionRef.child(committee_array[i]);
-        listen(committeeRef.child("topic 1"), "topic 1", committee_array[i], "resList_registration");
-        listen(committeeRef.child("topic 2"), "topic 2", committee_array[i], "resList_registration");
-        listen(committeeRef.child("topic 3"), "topic 3", committee_array[i], "resList_registration");
-        listen(committeeRef.child("topic 4"), "topic 4", committee_array[i], "resList_registration");
+    for (i = 0; i < allTopics.length; i++) {
+    	for (ii = 0; ii < allTopics[i].length; ii++) {
+        	var committeeRef = resolutionRef.child(committee_array[i]);
+    		listen(committeeRef.child(allTopics[i][ii]), allTopics[i][ii], committee_array[i], "resList_registration");
+    	}
     }
     
     listenAPanel();
