@@ -3,6 +3,7 @@
     "default": "dsa-mun-platform",
     "mun_andreas": "dsamun-9b8bd",
     "dsa-mun-platform": "dsa-mun-platform",
-    "dsamun-andreas": "dsamun-9b8bd"
+    "dsamun-andreas": "dsamun-9b8bd",
+    "dsamun-9b8bd": "dsamun-9b8bd"
   }
 }

@@ -160,9 +160,10 @@ function register() {
 					if (snapshot.exists())
 						counter = snapshot.val();
 					
+					//set the new id
 					var resRef = dRef.child(counter);
 
-					//set the new id
+					//set the original id
 					resRef.set(getId(option_text));
 					
 					firebase.database().ref().child("metadata").child(getId(option_text).toString()).child("registered").set(getDateAndTime());
