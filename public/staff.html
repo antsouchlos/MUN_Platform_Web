@@ -37,28 +37,6 @@
 				<!-- Main -->
 					<div id="main">
 
-						<!-- Introduction -->
-							<section id="download" class="main">
-								<div class="spotlight">
-									<div class="content">
-										<header class="major">
-											<h2>Download Resolution</h2>
-										</header>
-										<p> Download the file of the resolution, ONLY IF the CO-Submitter Sign Up Sheet is delivered
-											to the Draft Panel and copy it into the local MUN folder following the instructions of the head.
-										</p>
-										<div id="content">
-                                            
-										<select id="resList"></select>
-                                            
-										<br>
-											<ul class="actions">
-												<li><a href="#" class="button icon fa-download" id="download_link">Download</a></li>
-											</ul>
-										</div>
-									</div>
-								</div>
-							</section>
 
 						<!-- ID Register -->
 							<section id="id" class="main">
@@ -67,11 +45,21 @@
 								</header>
 								<p>Pick one of the downloaded resolutions to register them</p>
 								<div class="12u$">
+										<div class="select-wrapper">
+											<select id="topicView">
+											</select>
+										</div>
+									<br>
 									<div class="select-wrapper">
 										<select id="resList_registration"></select>
 									</div>
+									<br>
+									<input type="text" id="resName" value="" placeholder="Resolution Name" />
 								</div>
 								<br>
+								<ul class="actions">
+                                	<input type="file" id="fileChooser_aNumber" placeholder="Choose document">
+                                </ul>
 								<div>
 									<h2>Next ID: <font id="next_id_txt"></font></h2>
 									<ul class="actions">
@@ -124,7 +112,7 @@
 						<!-- GA -->
 							<section id="GA" class="main">
 								<header class="major">
-									<h2>GA Registration</h2>
+									<h2>Debate Status</h2>
 								</header>
 								<p>Pick one of the resolutions and upload the most recent version with the amendments</p>
 								<div class="12u$">
@@ -132,6 +120,17 @@
 										<select id="resList_GaRegistration"></select>
 									</div>
 								</div>
+								<br>
+							<div class="row uniform">
+								<div class="4u 12u$(small)">
+									<input type="radio" id="debatePassed_radio" name="demo-priority" checked>
+									<label for="debatePassed_radio">Passed</label>
+								</div>
+								<div class="4u 12u$(small)">
+									<input type="radio" id="debateFailed_radio" name="demo-priority">
+									<label for="debateFailed_radio">Failed</label>
+								</div>
+							</div>
 								<br>
 								<div>
 									<input type="file" id="GaFileChooser" placeholder="Choose document">
@@ -147,7 +146,7 @@
 						<!-- Contact -->
 							<section id="logout" class="main special">
 								<header class="major">
-									<h2>Contact Us</h2>
+									<h2>Log out</h2>
 									<p>Your credentials are stored until you logout, so at the end logout.</p>
 								</header>
 								<footer class="major">
