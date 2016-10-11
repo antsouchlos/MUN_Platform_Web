@@ -6,7 +6,8 @@ var prevID = 0;
 var currentCommittee = null;
 var uploading = false;
 
-function uploadDateAndTime(id) {   
+//Theoretically not needed any more
+/*function uploadDateAndTime(id) {   
     var currentDate = new Date();
     var dateAndTime = "";
     
@@ -33,9 +34,9 @@ function uploadDateAndTime(id) {
     dateAndTime += currentDate.getHours() + ':' + currentDate.getMinutes() + ":" + currentDate.getSeconds();
     
     firebase.database().ref().child("metadata").child(id.toString()).child("uploaded").set(dateAndTime);
-}
+}*/
 
-function hideUIElements() {
+/*function hideUIElements() {
     //hide messages
     document.getElementById("msg_text").style.visibility = "hidden";
     //document.getElementById("debateMsg").style.visibility = "hidden";
@@ -50,7 +51,7 @@ function hideUIElements() {
     document.getElementById("topicView").selectedIndex = 0;
     document.getElementById("resList").selectedIndex = 0;
     document.getElementById("resList2").selectedIndex = 0;
-}
+}*/
 
 //gets called when the selected element of the "chek" select box changes
 function check() {
@@ -184,7 +185,7 @@ function gaDownload() {
 	}
 }
 
-function upload(committee, file) {
+/*function upload(committee, file) {
     var topicView = document.getElementById("topicView");
     var resName = document.getElementById("resName").value;
     
@@ -230,7 +231,10 @@ function upload(committee, file) {
 
                         //add the new resolution to the database
                         firebase.database().ref().child("resolutions").child(committee).child(topic).child(counter).set(resName);
-                        uploadDateAndTime(counter, "uploaded");
+                        
+                        //set the date and time the resolution was uploaded
+                        firebase.database().ref().child("metadata").child(counter.toString()).child("uploaded").set(getDateAndTime());
+                        
                         firebase.database().ref().child("committees").child(counter).set(committee);
                         
                         //update the counter
@@ -243,9 +247,9 @@ function upload(committee, file) {
         alert("An error occurred while uploading resolution");
 
     }
-}
+}*/
 
-function submitDebateStatus() {
+/*function submitDebateStatus() {
     //document.getElementById("debateMsg").style.visibility = "hidden";
     //document.getElementById("debateMsg2").style.visibility = "hidden";
     document.getElementById("debateMsg3").style.visibility = "hidden";
@@ -287,9 +291,9 @@ function submitDebateStatus() {
 	} else {
 		alert("You must choose a resolution to update its debate status");
 	}
-}
+}*/
 
-function submitGaStatus() {
+/*function submitGaStatus() {
 	document.getElementById("GaMsg3").style.visibility = "hidden";
 	
 	var GaApproved_radio = document.getElementById("GaApproved_radio");
@@ -331,7 +335,7 @@ function submitGaStatus() {
 	} else {
 		alert("You must choose a resolution to update its debate status");
 	}
-}
+}*/
 
 function addChild(originalId, name, id, listName) {
     var list = document.getElementById(listName);
@@ -500,7 +504,7 @@ function startListeners(committee) {
 }
 
 function init() {
-	hideUIElements();
+	//hideUIElements();
     
     var fired = false;
     firebase.auth().onAuthStateChanged(firebaseUser => {
@@ -566,7 +570,7 @@ function init() {
     });
     
     //get the selected file
-    var file = null;
+    /*var file = null;
     document.getElementById("fileChooser").addEventListener('change', function(e) {
         file = e.target.files[0];
     });
@@ -574,7 +578,6 @@ function init() {
     //-------- Button/Link - listeners --------
     
     //upload
-    
     document.getElementById("upload_link").onclick = function() {
     	if (!uploading) {
     		uploading = true;
@@ -604,7 +607,7 @@ function init() {
     	
     	//make sure the default link behaviour isn't followed
     	return false;
-    };
+    };*/
     
     //logout
     document.getElementById("logout_link").onclick = function() {

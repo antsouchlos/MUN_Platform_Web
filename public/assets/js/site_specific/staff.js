@@ -69,35 +69,6 @@ function removeChild(index, listName) {
     list.remove(index);
 }
 
-function getDateAndTime() {
-    var currentDate = new Date();
-    var dateAndTime = "";
-    
-    var day = currentDate.getDay(); 
-    
-    //translate the day from a number to a string
-    if (day == 0) {
-        dateAndTime += "Sun, ";
-    } else if (day == 1) {
-        dateAndTime += "Mon, ";
-    } else if (day == 2) {
-        dateAndTime += "Tue, ";
-    } else if (day == 3) {
-        dateAndTime += "Wed, ";
-    } else if(day == 4) {
-        dateAndTime += "Thu, ";
-    } else if(day == 5) {
-        dateAndTime += "Fri, ";
-    } else {
-        dateAndTime += "Sat, ";
-    }
-    
-    //set the time
-    dateAndTime += currentDate.getHours() + ':' + currentDate.getMinutes() + ":" + currentDate.getSeconds();
-    
-    return dateAndTime;
-}
-
 function gaUpload(file) {
 	document.getElementById("GaResRegistered_msg").style.visibility = "hidden";
 	document.getElementById("GaResRegistered_msg4").style.visibility = "hidden";
