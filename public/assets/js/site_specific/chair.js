@@ -1,8 +1,8 @@
 //global variables
 var resList_ids = [];
+
 var notRegistered = 0;
 var prevID = 0;
-var prevIDListen = 0;
 var currentCommittee = null;
 var uploading = false;
 
@@ -77,7 +77,7 @@ function check() {
         
         
         //detach previous listeners
-        //firebase.database().ref().child("metadata").child(prevID).child("id").off();
+        firebase.database().ref().child("metadata").child(prevID).child("id").off();
         firebase.database().ref().child("metadata").child(prevID).child("uploaded").off();
         firebase.database().ref().child("metadata").child(prevID).child("registered").off();
         firebase.database().ref().child("metadata").child(prevID).child("aPanel").off();
@@ -236,8 +236,6 @@ function upload(committee, file) {
                         //update the counter
                         counterRef.set(counter);
                     });
-                    
-                    uploading = false;
                 }
             );
         }
@@ -257,28 +255,35 @@ function submitDebateStatus() {
 	
 	//make sure an item is selected
 	if (resList2.selectedIndex != -1) {
-        var metaReference = firebase.database().ref().child("metadata").child(resList_ids[getId(resList2.options[resList2.selectedIndex].value)-1]);
-        
-        //check if the resolution already has a debate status
-        metaReference.once('value', function(snapshot) {
-        	if (snapshot.hasChild("debate")) {
-        	    //document.getElementById("debateMsg").style.visibility = "visible";
-        	} else {
-        		var debateReference = metaReference.child("debate");
-        		
-    	        if (debatePassed_radio.checked == true) {
-    	    		debateReference.set("passed");
-    	    	} else {
-    	    		debateReference.set("failed");
-    	    	}
-    	        
-    	        firebase.database().ref().child("debate").child(getId(resList2.options[resList2.selectedIndex].value)).set(resList_ids[getId(resList2.options[resList2.selectedIndex].value)-1]);
-    	        document.getElementById("debateMsg3").style.visibility = "visible";
-    	        
-    	        //make the resolution unavailable for further debate-status sbmissions
-    	        firebase.database().ref().child("A_Number").child(getId(resList2.options[resList2.selectedIndex].value)).remove();
-        	}
-        });
+		//get the current id of the resolution
+		var id = getId(resList2.options[resList2.selectedIndex].value);
+		
+		firebase.database().ref().child("D").child(id.toString()).once("value", function(snapshot) {
+			//get the originalId of the resolution
+			var originalId = snapshot.val();
+			var metaReference = firebase.database().ref().child("metadata").child(originalId);
+	        
+	        //check if the resolution already has a debate status
+	        metaReference.once('value', function(snapshot) {
+	        	if (snapshot.hasChild("debate")) {
+	        	    //document.getElementById("debateMsg").style.visibility = "visible";
+	        	} else {
+	        		var debateReference = metaReference.child("debate");
+	        		
+	    	        if (debatePassed_radio.checked == true) {
+	    	    		debateReference.set("passed");
+	    	    	} else {
+	    	    		debateReference.set("failed");
+	    	    	}
+	    	        
+	    	        firebase.database().ref().child("debate").child(id).set(originalId);
+	    	        document.getElementById("debateMsg3").style.visibility = "visible";
+	    	        
+	    	        //make the resolution unavailable for further debate-status sbmissions
+	    	        firebase.database().ref().child("A_Number").child(getId(resList2.options[resList2.selectedIndex].value)).remove();
+	        	}
+	        });
+		});
 	} else {
 		alert("You must choose a resolution to update its debate status");
 	}
@@ -353,7 +358,7 @@ function changeChild(name, index, id, listName) {
 
     if (id == -1) {
     	item.text += "ID [not registered]";
-		id = 1 - notRegistered;
+		id = 1 - notRegistered + index;
     } else {
     	item.text += "ID " + id.toString();
     	notRegistered--;
@@ -362,7 +367,18 @@ function changeChild(name, index, id, listName) {
     item.text += " " + name;
 
     list.remove(index);
-    list.add(item, index);
+    list.add(item, id -1 + notRegistered);
+
+    if (listName = "resList") {
+    	//backup the item's value
+    	var originalId = resList_ids[index];
+    	
+    	//remove the item from the list
+    	resList_ids.splice(index, 1);
+    	
+    	//insert the item in the new position
+    	resList_ids.splice(id -1 + notRegistered, 0, originalId);
+    }
 }
 
 function removeChild(index, listName) {
@@ -395,11 +411,6 @@ function listen(reference, topic, listName) {
             }
         });
     });
-}
-
-function printList(list) {
-	for (i = 0; i< list.length; i++)
-		alert(list[i].value);
 }
 
 function debateListen(listName) {
@@ -470,13 +481,14 @@ function gaDownloadListen(listName) {
 	});
 }
 
-function startListeners(committee) {
+function startListeners(committee) {	
     const resolutionRef = firebase.database().ref().child("resolutions").child(committee);
     
-    listen(resolutionRef.child("topic 1"), "topic 1", "resList");
-    listen(resolutionRef.child("topic 2"), "topic 2", "resList");
-    listen(resolutionRef.child("topic 3"), "topic 3", "resList");
-    listen(resolutionRef.child("topic 4"), "topic 4", "resList");
+    var index = committee_array.indexOf(committee);
+    var topics = allTopics[index];
+    
+    for (i = 0; i < topics.length; i++)
+    	listen(resolutionRef.child(topics[i]), topics[i], "resList");
 	
     debateListen("resList2");
     
@@ -496,83 +508,54 @@ function init() {
             fired = true;
             
             var studentOfficer = "Student officer";
-
             var email = firebaseUser.email;
-
+            var list = document.getElementById("topicView");
+            
             if (email == "political@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Special Political and Decolonization Committee";
                 
-                var list = document.getElementById("topicView");
-                
-                var option1 = document.createElement("option");
-                var option2 = document.createElement("option");
-                var option3 = document.createElement("option");
-                
-                option1.text = "Eliminating the funding of ISIL via anti-money laundering strategies";
-                option2.text = "The question of the alleged Tamile genocide in Sri Lanka";
-                option3.text = "Achieving border security and provision of quotas to political asylum seekers and refugees within the premises of the European Union (EU)";
-                
-                list.add(option1);
-                list.add(option2);
-                list.add(option3);
+                for (i = 0; i < poliTopics.length; i++) {
+                	var option = document.createElement("option");
+                	option.text = poliTopics[i];
+                	list.add(option);
+                }
                 
                 currentCommittee = "political";
+                
             } else if (email == "disarmament@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Disarmament and International Security Commitee";
                 
-                var list = document.getElementById("topicView");
-                
-                var option1 = document.createElement("option");
-                var option2 = document.createElement("option");
-                var option3 = document.createElement("option");
-                
-                option1.text = "Reestablishing the criteria under which a country engages into war (jus ad bellum) and the Laws of War (jus in bello)";
-                option2.text = "The issue of the denuclearization of the Korean peninsula";
-                option3.text = "Strengthening international cooperation to counteract terrorist action of ISIS";
-                
-                list.add(option1);
-                list.add(option2);
-                list.add(option3);
+                for (i = 0; i < disaTopics.length; i++) {
+                	var option = document.createElement("option");
+                	option.text = disaTopics[i];
+                	list.add(option);
+                }
                 
                 currentCommittee = "disarmament";
+                
             } else if (email == "humanitarian@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Social, Humanitarian and Cultural Committee";
                 
-                var list = document.getElementById("topicView");
-                
-                var option1 = document.createElement("option");
-                var option2 = document.createElement("option");
-                var option3 = document.createElement("option");
-                
-                option1.text = "Combating social conflicts and the growing far right ideology in refugee - hosting countries";
-                option2.text = "Establishing global minimum working condition standards";
-                option3.text = "Tackling the issue of child marriage and child grooming";
-                
-                list.add(option1);
-                list.add(option2);
-                list.add(option3);
+                for (i = 0; i < humaTopics.length; i++) {
+                	var option = document.createElement("option");
+                	option.text = humaTopics[i];
+                	list.add(option);
+                }
                 
                 currentCommittee = "humanitarian";
+                
             } else if (email == "environmental@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Environmental Committee";
                 
-                var list = document.getElementById("topicView");
-                
-                var option1 = document.createElement("option");
-                var option2 = document.createElement("option");
-                var option3 = document.createElement("option");
-                
-                option1.text = "Bio application of nanomaterials and their consequences on human health and the environment";
-                option2.text = "Preventing the degradation of maritime environment due to off shore oil mining";
-                option3.text = "Finding long term solutions for waste management in LEDCs";
-                
-                list.add(option1);
-                list.add(option2);
-                list.add(option3);
+                for (i = 0; i < enviTopics.length; i++) {
+                	var option = document.createElement("option");
+                	option.text = enviTopics[i];
+                	list.add(option);
+                }
                 
                 currentCommittee = "environmental";
             }
@@ -597,6 +580,8 @@ function init() {
     		uploading = true;
     		
         	upload(currentCommittee, file);
+        	
+            uploading = false;
     	} else {
     		alert("Please wait until the current file is uploaded");
     	}

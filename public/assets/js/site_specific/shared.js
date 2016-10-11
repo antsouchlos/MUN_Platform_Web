@@ -1,3 +1,13 @@
+//global variables
+var poliTopics = ["Eliminating the funding of ISIL via anti-money laundering strategies", "Eliminating the funding of ISIL via anti-money laundering strategies", "The question of the alleged Tamile genocide in Sri Lanka", "Achieving border security and provision of quotas to political asylum seekers and refugees within the premises of the European Union (EU)"];
+var disaTopics = ["Reestablishing the criteria under which a country engages into war (jus ad bellum) and the Laws of War (jus in bello)", "The issue of the denuclearization of the Korean peninsula", "Strengthening international cooperation to counteract terrorist action of ISIS"];
+var humaTopics = ["Combating social conflicts and the growing far right ideology in refugee - hosting countries", "Establishing global minimum working condition standards", "Tackling the issue of child marriage and child grooming"];
+var enviTopics = ["Bio application of nanomaterials and their consequences on human health and the environment", "Preventing the degradation of maritime environment due to off shore oil mining", "Finding long term solutions for waste management in LEDCs"];
+
+var allTopics = [poliTopics, disaTopics, humaTopics, enviTopics];
+
+var committee_array = ["political", "disarmament", "humanitarian", "environmental"];
+
 //takes the the text of a select-option as an argument and returns only the relevant part for download (only the resolution name and topic - without the id)
 function getRelevant(itemValue) {
     var result = "";
