@@ -1,376 +1,216 @@
-function download() {
-    var list = document.getElementById("resList");
-
-    //make sure something is selected
-    if (list.selectedIndex != -1) {
-        //get selected list item
-        var selectedItem = list.options[list.selectedIndex].text;
-
-        //get just the resolution's name and topic from the text of the item
-        var relevant = getRelevant(selectedItem);
-        var committee = getCommittee(relevant);
-        var resName = getName(relevant);
-        var resTopic = getTopic(relevant);
-
-        //set up the firebase reference
-        var storageRef = firebase.storage().ref();
-
-        //download file
-        storageRef.child("resolutions").child(committee).child(resTopic).child(resName).getDownloadURL().then(function(url) {
-            document.location.href = url;
-        }).catch(function(error) {
-            alert("An error occurred while downloading file");
-        });
-    } else {
-        alert("You must choose a resolution to download");
-    }
-}
-
-//takes the value of a select-option (form: "Resolution [id]: [topic]/[name]") as an argument and returns the id
-function getId(txt) {
-    var result = "";
-    
-   	var writing = false;
-    
-    for (i = 0; i < txt.length; i++) {
-        if (!writing) {
-            if (txt.charAt(i) == ' ')
-                writing = true;
-        } else {
-            if (txt.charAt(i) == ':')
-                break;
-            else
-                result += txt.charAt(i);
-        }
-    }
-    
-    return parseInt(result);
-}
-
-function addChild(name, id, listName) {
-    var list = document.getElementById(listName);
-    var item = document.createElement("option");
-    item.text = "Resolution " + id + ": " + name;
-    
-    list.add(item);
-}
-
-function changeChild(name, index, listName) {
-    var list = document.getElementById(listName);
-    var item = document.createElement("option");
-    item.text = "Resolution " + (index+1) + ": " + name;
-
-    list.remove(index);
-    list.add(item, index);
-}
-
-function removeChild(index, listName) {
-    var list = document.getElementById(listName);
-    list.remove(index);
-}
-
-function gaUpload(file) {
-	document.getElementById("GaResRegistered_msg").style.visibility = "hidden";
-	document.getElementById("GaResRegistered_msg4").style.visibility = "hidden";
+function initUI() {
+	document.getElementById("resRegistration_msg").style.visibility = "hidden";
+	document.getElementById("resRegistration_msg2").style.visibility = "hidden";
+	document.getElementById("resAPanel_msg").style.visibility = "hidden";
+	document.getElementById("resAPanel_msg2").style.visibility = "hidden";
+	document.getElementById("resCorrection_msg").style.visibility = "hidden";
+	document.getElementById("resCorrection_msg2").style.visibility = "hidden";
+	document.getElementById("resANumber_msg").style.visibility = "hidden";
+	document.getElementById("resANumber_msg2").style.visibility = "hidden";
+	document.getElementById("resDebate_msg").style.visibility = "hidden";
+	document.getElementById("resDebate_msg2").style.visibility = "hidden";
 	
-	if (file != null) {
-		var list = document.getElementById("resList_GaRegistration");
+	document.getElementById("registrationFileChooser").value = "";
+	document.getElementById("fileChooser_aNumber").value = "";
+	document.getElementById("debateFileChooser").value = "";
+}
+
+//chnage the topics according to the newly selected committee
+function changeCommittee() {
+	var committee_select = document.getElementById("committeeView");
+	var topic_select = document.getElementById("topicView");
+	var selectedIndex = committee_select.selectedIndex;
+	
+	if (selectedIndex != -1) {
 		
-		if (list.selectedIndex != -1) {
-			var id = getId(list.options[list.selectedIndex].text);
-			
-			firebase.database().ref().child("GA").child(id).once("value", function(snapshot) {
-				if (!snapshot.exists()) {
-		        	var storageRef = firebase.storage().ref().child("GA").child(id.toString());
-		        	var uploadTask = storageRef.put(file);
-
-		        	uploadTask.on('state_changed',
-		                    function progress(snapshot) {},
-		        			
-		                    function error(err) {
-		    					alert("An error occurred");
-		                    },
-	
-		                    function complete() {
-		                        //register the resolution as 'ready to download'
-		                    	firebase.database().ref().child("GA_Ready").child(id).set("");
-		                    	
-		                    	document.getElementById("GaResRegistered_msg4").style.visibility = "visible";
-		                    }
-		            );
-
-				} else {
-					document.getElementById("GaResRegistered_msg").style.visibility = "visible";
-				}
-			});
-		} else {
-			alert("You must choose an ID to upload the file to");
+		topic_select.options.length = 0;
+		
+		//add new items depending on the selected commmittee
+		var committee_txt = committee_select[selectedIndex].text;
+		
+		if (committee_txt == "Special Political and Decolonization Committee") {
+            for (i = 0; i < poliTopics.length; i++) {
+            	var option = document.createElement("option");
+            	option.text = poliTopics[i];
+            	topic_select.add(option);
+            }
+		} else if (committee_txt == "Disarmament and International Security Commitee") {
+            for (i = 0; i < disaTopics.length; i++) {
+            	var option = document.createElement("option");
+            	option.text = disaTopics[i];
+            	topic_select.add(option);
+            }
+		} else if (committee_txt == "Social, Humanitarian and Cultural Committee") {
+            for (i = 0; i < humaTopics.length; i++) {
+            	var option = document.createElement("option");
+            	option.text = humaTopics[i];
+            	topic_select.add(option);
+            }
+		} else if (committee_txt == "Environmental Committee") {
+            for (i = 0; i < enviTopics.length; i++) {
+            	var option = document.createElement("option");
+            	option.text = enviTopics[i];
+            	topic_select.add(option);
+            }
 		}
 	} else {
-		alert("You must choose a file to upload");
+		//possibly show error message
 	}
 }
 
-function register() {
-	document.getElementById("resRegistered_msg").style.visibility = "hidden";
-	document.getElementById("resRegistered_msg4").style.visibility = "hidden";
+function register(file, committee, topic) {
+	document.getElementById("resRegistration_msg").style.visibility = "hidden";
+	document.getElementById("resRegistration_msg2").style.visibility = "hidden";
 	
-	var list = document.getElementById("resList_registration");
+	var committee_select = document.getElementById("committeeView");
+	var topic_select = document.getElementById("topicView");
+	var resName = document.getElementById("resName");
 	
-	//make sure a resolution is selected
-	if (list.selectedIndex != -1) {
-		var option_text = list[list.selectedIndex].text;
-		
-		var dRef = firebase.database().ref().child('D');
-		
-		firebase.database().ref().child("metadata").child(getId(option_text)).child("id").once("value", function (snapshot) {
-			if (!snapshot.exists()) {
-				var counter = 1;
-				
-				dRef.child("counter").once("value", function (snapshot) {
+	if (committee_select.selectedIndex != -1) {
+		if (topic_select.selectedIndex != -1) {
+			var committee = committee_select.options[committee_select.selectedIndex].text;
+			var topic = topic_select.options[topic_select.selectedIndex].text;
+			
+			if (resName != "") {
+				//get the current value of the counter
+				firebase.database().ref().child("counter").once("value", function(snapshot) {
+					var n = 1;
+					
 					if (snapshot.exists())
-						counter = snapshot.val();
+						n = snapshot.val();
 					
-					//set the new id
-					var resRef = dRef.child(counter);
+					//upload file
+		            var storageRef = firebase.storage().ref("D/" + committee + "/" + topic + "/" + resName);
+		            storageRef.put(file).on('state_changed',
+		                function progress(snapshot) {},
+		            	
+		                function error(err) { alert("An error occurred during the upload of the file"); },
 
-					//set the original id
-					resRef.set(getId(option_text));
-					
-					firebase.database().ref().child("metadata").child(getId(option_text).toString()).child("registered").set(getDateAndTime());
-					firebase.database().ref().child("metadata").child(getId(option_text).toString()).child("id").set(counter);
-					
-					//add 1 to the value of the counter
-					dRef.child("counter").set(counter+1);
-					
-					document.getElementById("resRegistered_msg4").style.visibility = "visible";
-				});	
-			} else {
-				document.getElementById("resRegistered_msg").style.visibility = "visible";
-			}
-		});
-	} else {
-		("You must select a resolution to register");
-	}
-}
+		                function complete() {
+		                    //add the new resolution to the database
+	                        if (snapshot.exists())
+	                            counter = snapshot.val() + 1;
 
-function submit_aPanel() {
-	document.getElementById("resRegistered_msg2").style.visibility = "hidden";
-	document.getElementById("resRegistered_msg5").style.visibility = "hidden";
-	
-	var list = document.getElementById("resList_aPanel");
-	
-	//make sure a resolution is selected
-	if (list.selectedIndex != -1) {
-		var id = parseInt(getRelevant(list[list.selectedIndex].text));
-		
-		firebase.database().ref().child("A_Panel").child(id).once("value", function (snapshot) {
-			if (!snapshot.exists()) {
-				firebase.database().ref().child("D").child(id).once("value", function(innerSnapshot) {
-					var originalId = innerSnapshot.val();
-					
-					firebase.database().ref().child("A_Panel").child(id).set(originalId);
-					firebase.database().ref().child("metadata").child(id).child("aPanel").set(getDateAndTime());
-					
-					document.getElementById("resRegistered_msg5").style.visibility = "visible";
+	                        //add the new resolution to the database
+	                        firebase.database().ref().child("resolutions").child(committee).child(topic).child(n.toString()).set(resName.value);
+	                        firebase.database().ref().child("metadata").child(n.toString()).child("D").set(getDateAndTime());
+	                        firebase.database().ref().child("committees").child(n.toString()).set(committee);
+	    					firebase.database().ref().child("D").child(n.toString()).set(n);
+	                        
+	    					//update the counter
+	    					firebase.database().ref().child("counter").set(n+1);
+	    					
+	    					//show the 'Resolution successfully uploaded' message
+		                    document.getElementById("resRegistration_msg2").style.visibility = "visible";
+		                }
+		            );
 				});
 			} else {
-				document.getElementById("resRegistered_msg2").style.visibility = "visible";
+				alert("You must choose a name for the resolution");
 			}
-		});
-	} else {
-		alert("You must select a resolution to register to the A-Panel");
-	}
-}
-
-function submit_aNumber(file) {
-	document.getElementById("resRegistered_msg3").style.visibility = "hidden";
-	document.getElementById("resRegistered_msg6").style.visibility = "hidden";
-	
-	var list = document.getElementById("resList_aNumber");
-	
-	//make sure a resolution is selected
-	if (list.selectedIndex != -1) {
-		if (file != null) {
-			var id = parseInt(getRelevant(list[list.selectedIndex].text));
-			
-			firebase.database().ref().child("A_Number_Download").child(id).once("value", function(snapshot) {
-				if (!snapshot.exists()) {
-			        var storageRef = firebase.storage().ref("A/" + id);
-			        
-			        //upload file
-			        storageRef.put(file).on('state_changed',
-			            function progress(middleSnapshot) {},
-			            function error(err) {},
-
-			            function complete() {
-			            	firebase.database().ref().child("D").child(id).once("value", function(innerSnapshot) {
-								var originalId = innerSnapshot.val();
-								
-								firebase.database().ref().child("A_Number").child(id).set(originalId);
-								firebase.database().ref().child("A_Number_Download").child(id).set(originalId);
-								firebase.database().ref().child("metadata").child(parseInt(id)).child("aNumber").set(getDateAndTime());
-								
-								document.getElementById("resRegistered_msg6").style.visibility = "visible";
-							});
-			            }
-			        );
-				} else {
-					document.getElementById("resRegistered_msg3").style.visibility = "visible";
-				}
-			});
 		} else {
-			alert("You must choose a file to upload to register a resolution for an A-Number");
+			alert("You must choose a topic for the resolution");
 		}
 	} else {
-		alert("You must select a resolution to give an A-Number to");
+		alert("You must choose a committe for the resolution");
 	}
 }
 
-//listen for changes to the children of "reference" and update "resList" accordingly
-function listen(reference, topic, committee, listName) {
-    //add an item to list when a child is added to the database
-    reference.on('child_added', function(childSnapshot, prevChildKey) {
-        if (prevChildKey == null)
-            prevChildKey = "0";
-
-        addChild(committee + '/' + topic + '/' + childSnapshot.val(), parseInt(childSnapshot.key), listName);
-    });
-
-    //change an item's text when the value of the corresponding child is changed in the database
-    reference.on('child_changed', function(childSnapshot, prevChildKey) {
-        if (prevChildKey == null)
-            prevChildKey = "0";
-
-        changeChild(committee + '/' + topic + '/' + childSnapshot.val(), parseInt(childSnapshot.key)-1, listName);
-    });
-
-    //remove an item when the corresponding child is removed from the database
-    reference.on('child_removed', function(oldChildSnapshot) {
-        removeChild(parseInt(oldChildSnapshot.key-1), listName);
-    });
+function submit_APanel() {
+	
 }
 
-function listenAPanel() {
-	var list = document.getElementById("resList_aPanel");
+function submit_correction() {
 	
-	firebase.database().ref().child('D').on("child_added", function(snapshot, prevChildKey) {
-		if (snapshot.key.toString() != "counter") {
-			var item = document.createElement("option");
-			item.text = "ID: " + snapshot.key;
-			
-			list.add(item, parseInt(snapshot.key)-1);
-		}
+}
+
+function submit_ANumber(file) {
+	
+}
+
+function submit_debate(file) {
+	
+}
+
+function listenAPanel(listName) {
+	var list = document.getElementById(listName);
+	firebase.database().ref().child("D").on("child_added", function(snapshot, prevChildKey) {
+		var option = document.createElement("option");
+		option.text = "D " + formatNum(snapshot.val());
+		list.add(option);
 	});
 }
 
-function listenANumber() {
-	var list = document.getElementById("resList_aNumber");
+function listenCorrection(listName) {
 	
-	firebase.database().ref().child("A_Panel").on("child_added", function(snapshot, prevChildKey) {
-		if (snapshot.key.toString() != "counter") {
-			var item = document.createElement("option");
-			item.text = "ID: " + snapshot.key;
-			
-			list.add(item, parseInt(snapshot.key) -1);
-		}
-	});
 }
 
-function listenGaUpload() {
-	var list = document.getElementById("resList_GaRegistration");
+function listenANumber(listName) {
 	
-	firebase.database().ref().child("ga").on("child_added", function(snapshot) {
-		firebase.database().ref().child("metadata").child(snapshot.val()).child("ga").once("value", function(innerSnapshot) {
-			if (innerSnapshot.val() == "approved") {
-				var item = document.createElement("option");
-				item.text = "ID " + snapshot.key;
-				
-				list.add(item, parseInt(snapshot.key) -1)
-			}
-		});
-	});
+}
+
+function listenDebate(listName) {
+	
+}
+
+function startListeners() {
+	listenAPanel("resList_aPanel");
+	listenCorrection("resList_correction");
+	listenANumber("resList_aNumber");
+	listenDebate("resList_debate");
 }
 
 function init() {
-	document.getElementById("resRegistered_msg").style.visibility = "hidden";
-	document.getElementById("resRegistered_msg2").style.visibility = "hidden";
-	document.getElementById("resRegistered_msg3").style.visibility = "hidden";
-	document.getElementById("resRegistered_msg4").style.visibility = "hidden";
-	document.getElementById("resRegistered_msg5").style.visibility = "hidden";
-	document.getElementById("resRegistered_msg6").style.visibility = "hidden";
-	document.getElementById("GaResRegistered_msg").style.visibility = "hidden";
-	document.getElementById("GaResRegistered_msg4").style.visibility = "hidden";
+	initUI();
 	
-	document.getElementById("fileChooser_aNumber").value = "";
-	document.getElementById("GaFileChooser").value = "";
-
-    //add listener to the logout button
-    document.getElementById("logout_link").onclick = function () {
-    	firebase.auth().signOut();
-    	document.location.href = "index.html";
-    	
-    	//make sure the default link behaviour isn't followed
-    	return false;
-    };
-    
-    //add listener to the "download" button
-    var download_link = document.getElementById("download_link");
-    download_link.onclick = function() {
-        download();
-        
-        //make sure the default link behaviour isn't followed
-        return false;
-    }
-    
-    const resolutionRef = firebase.database().ref().child('resolutions');
-    
-    for (i = 0; i < allTopics.length; i++) {
-    	for (ii = 0; ii < allTopics[i].length; ii++) {
-        	var committeeRef = resolutionRef.child(committee_array[i]);
-    		listen(committeeRef.child(allTopics[i][ii]), allTopics[i][ii], committee_array[i], "resList");
-    	}
-    }
-    
-    for (i = 0; i < allTopics.length; i++) {
-    	for (ii = 0; ii < allTopics[i].length; ii++) {
-        	var committeeRef = resolutionRef.child(committee_array[i]);
-    		listen(committeeRef.child(allTopics[i][ii]), allTopics[i][ii], committee_array[i], "resList_registration");
-    	}
-    }
-    
-    listenAPanel();
-    listenANumber();
-    listenGaUpload();
-    
-    //get the selected file
-    var file = null;
+	var committee_select = document.getElementById("committeeView");
+	
+	//populate the committee_select list with the committees
+	for (i = 0; i < committee_array.length; i++) {
+		var option = document.createElement("option");
+		
+		var committee = committee_array[i];
+		
+		if (committee == "political") {
+			option.text = "Special Political and Decolonization Committee";
+		} else if (committee == "disarmament"){
+			option.text = "Disarmament and International Security Commitee";
+		} else if (committee == "humanitarian") {
+			option.text = "Social, Humanitarian and Cultural Committee";
+		} else if (committee == "environmental") {
+			option.text = "Environmental Committee";
+		}
+		
+		committee_select.add(option);
+	}
+	
+	startListeners();
+	
+	//set a default selection, so the topic_select list is not empty
+	committee_select.selectedIndex = 0;
+	changeCommittee();
+	
+	//get the selected file for the registration
+    var registrationFile = null;
+    document.getElementById("registrationFileChooser").addEventListener('change', function(e) {
+        registrationFile = e.target.files[0];
+    });
+	
+    //get the selected file for the ANumber upload
+    var aNumberFile = null;
     document.getElementById("fileChooser_aNumber").addEventListener('change', function(e) {
-        file = e.target.files[0];
+        aNumberFile = e.target.files[0];
     });
-    
-    //get the selected file for the GA
-    var GaFile = null;
-    document.getElementById("GaFileChooser").addEventListener('change', function(e) {
-        GaFile = e.target.files[0];
+	
+    //get the selected file for the debate
+    var debateFile = null;
+    document.getElementById("debateFileChooser").addEventListener('change', function(e) {
+        debateFile = e.target.files[0];
     });
-    
-    //set the 'Next ID' label
-    firebase.database().ref().child('D').child("counter").on("value", function(snapshot) {
-    	var counter = 1;
-    	
-    	if (snapshot.exists())
-    		counter = snapshot.val();
-    	
-    	document.getElementById("next_id_txt").innerHTML = counter.toString();
-    	
-    });
-    
-    //-------- Button/Link - listeners --------
     
     //register
     document.getElementById("register_link").onclick = function() {
-        register();
+        register(registrationFile);
         
         //make sure the default link behaviour isn't followed
         return false;
@@ -378,7 +218,15 @@ function init() {
     
     //aPanel
     document.getElementById("aPanel_link").onclick = function() {
-    	submit_aPanel();
+    	submit_APanel();
+        
+        //make sure the default link behaviour isn't followed
+        return false;
+    }
+    
+    //correction
+    document.getElementById("correction_link").onclick = function() {
+    	submit_correction();
         
         //make sure the default link behaviour isn't followed
         return false;
@@ -386,15 +234,25 @@ function init() {
     
     //aNumber
     document.getElementById("aNumber_link").onclick = function() {
-        submit_aNumber(file);
+        submit_ANumber(ANumberFile);
         
         //make sure the default link behaviour isn't followed
         return false;
     }
     
-    //GA - upload
-    document.getElementById("GaRegistration_link").onclick = function() {
-    	gaUpload(GaFile);
+    //debate
+    document.getElementById("debateRegistration_link").onclick = function() {
+    	submit_debate(debateFile);
+    	
+    	//make sure the default link behaviour isn't followed
+    	return false;
+    };
+	
+    //logout
+    document.getElementById("logout_link").onclick = function () {
+
+    	firebase.auth().signOut();
+    	document.location.href = "index.html";
     	
     	//make sure the default link behaviour isn't followed
     	return false;

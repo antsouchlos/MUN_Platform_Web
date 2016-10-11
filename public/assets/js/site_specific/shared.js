@@ -1,5 +1,5 @@
 //global variables
-var poliTopics = ["Eliminating the funding of ISIL via anti-money laundering strategies", "Eliminating the funding of ISIL via anti-money laundering strategies", "The question of the alleged Tamile genocide in Sri Lanka", "Achieving border security and provision of quotas to political asylum seekers and refugees within the premises of the European Union (EU)"];
+var poliTopics = ["Eliminating the funding of ISIL via anti-money laundering strategies", "The question of the alleged Tamile genocide in Sri Lanka", "Achieving border security and provision of quotas to political asylum seekers and refugees within the premises of the European Union (EU)"];
 var disaTopics = ["Reestablishing the criteria under which a country engages into war (jus ad bellum) and the Laws of War (jus in bello)", "The issue of the denuclearization of the Korean peninsula", "Strengthening international cooperation to counteract terrorist action of ISIS"];
 var humaTopics = ["Combating social conflicts and the growing far right ideology in refugee - hosting countries", "Establishing global minimum working condition standards", "Tackling the issue of child marriage and child grooming"];
 var enviTopics = ["Bio application of nanomaterials and their consequences on human health and the environment", "Preventing the degradation of maritime environment due to off shore oil mining", "Finding long term solutions for waste management in LEDCs"];
@@ -128,4 +128,21 @@ function getDateAndTime() {
     dateAndTime += currentDate.getHours() + ':' + currentDate.getMinutes() + ":" + currentDate.getSeconds();
     
     return dateAndTime;
+}
+
+function formatNum(n) {
+	var result = "";
+	
+	if (n > 999) {
+		alert("The given number is too large to format");
+	} else {
+		var nDigits = n.toString().length;
+		
+		for (i = 0; i < (3 - nDigits); i++)
+			result += "0";
+		
+		result += n.toString();
+	}
+	
+	return result;
 }

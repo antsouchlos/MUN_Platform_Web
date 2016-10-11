@@ -43,29 +43,32 @@
 								</header>
 								<p>Pick one of the downloaded resolutions to register them</p>
 								<div class="12u$">
-										<div class="select-wrapper">
-											<select id="topicView">
-											</select>
-										</div>
-									<br>
 									<div class="select-wrapper">
-										<select id="resList_registration"></select>
+										<select id="committeeView" onchange="changeCommittee();">
+										</select>
+									</div>
+									
+									<br>
+									
+									<div class="select-wrapper">
+										<select id="topicView">
+										</select>
 									</div>
 									<br>
 									<input type="text" id="resName" value="" placeholder="Resolution Name" />
 								</div>
 								<br>
 								<ul class="actions">
-                                	<input type="file" id="fileChooser_aNumber" placeholder="Choose document">
+                                	<input type="file" id="registrationFileChooser" placeholder="Choose document">
                                 </ul>
 								<div>
-									<h1>Next ID: <font id="next_id_txt"></font></h1>
+									<h1>Next D-Number: <font id="next_id_txt"></font></h1>
 									<ul class="actions">
 										<li><a href="#" class="button special" id="register_link">Register</a></li>
 									</ul>
 								</div>
-								<h2 id="resRegistered_msg" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
-								<h2 id="resRegistered_msg4" style="text-align:center"><font color="green">Resolution registered</font></h2>
+								<h2 id="resRegistration_msg" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
+								<h2 id="resRegistration_msg2" style="text-align:center"><font color="green">Resolution registered</font></h2>
 							</section>
 
 						<!-- A Panel -->
@@ -85,22 +88,24 @@
 							<ul class="actions">
 								<li><a href="#" class="button special" id="aPanel_link">Submit</a></li>
 							</ul>
-							<h2 id="resRegistered_msg2" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
-							<h2 id="resRegistered_msg5" style="text-align:center"><font color="green">Resolution registered</font></h2>
+							<h2 id="resAPanel_msg" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
+							<h2 id="resAPanel_msg2" style="text-align:center"><font color="green">Resolution registered</font></h2>
+							
 							<h2>Correction Complete</h2>
 							<p>Pick the resolution that has been corrected by the advisor</p>
 							<div class="12u$">
 								<div class="select-wrapper">
-									<select id="resList_aPanel">
+									<select id="resList_correction">
 									</select>
 								</div>
 							</div>
 							<br>
 							<ul class="actions">
-								<li><a href="#" class="button special" id="aPanel_link">Submit</a></li>
+								<li><a href="#" class="button special" id="correction_link">Submit</a></li>
 							</ul>
-							<h2 id="resRegistered_msg2" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
-							<h2 id="resRegistered_msg5" style="text-align:center"><font color="green">Resolution registered</font></h2>
+							<h2 id="resCorrection_msg" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
+							<h2 id="resCorrection_msg2" style="text-align:center"><font color="green">Resolution registered</font></h2>
+							
 							<h2>A-Number</h2>
 							<p>Pick the resolution that got the A-Number and upload the corrected version.</p>
 							<div class="12u$">
@@ -117,8 +122,8 @@
 							<ul class="actions">
 								<li><a href="#" class="button special" id="aNumber_link">Submit</a></li>
 							</ul>
-							<h2 id="resRegistered_msg3" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
-							<h2 id="resRegistered_msg6" style="text-align:center"><font color="green">Resolution registered</font></h2>
+							<h2 id="resANumber_msg" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
+							<h2 id="resANumber_msg2" style="text-align:center"><font color="green">Resolution registered</font></h2>
 						</section>
 
 						<!-- GA -->
@@ -130,7 +135,7 @@
 									 upload the most recent digital version</p>
 								<div class="12u$">
 									<div class="select-wrapper">
-										<select id="resList_GaRegistration"></select>
+										<select id="resList_debate"></select>
 									</div>
 								</div>
 								<br>
@@ -149,14 +154,14 @@
 							</div>
 								<br>
 								<div>
-									<input type="file" id="GaFileChooser" placeholder="Choose document">
+									<input type="file" id="debateFileChooser" placeholder="Choose document">
 									<ul class="actions">
 										<br>
-										<li><a href="#" class="button special" id="GaRegistration_link">Submit</a></li>
+										<li><a href="#" class="button special" id="debateRegistration_link">Submit</a></li>
 									</ul>
 								</div>
-								<h2 id="GaResRegistered_msg" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
-								<h2 id="GaResRegistered_msg4" style="text-align:center"><font color="green">Resolution registered</font></h2>
+								<h2 id="resDebate_msg" style="text-align:center"><font color="red">This resolution is already registered</font></h2>
+								<h2 id="resDebate_msg2" style="text-align:center"><font color="green">Resolution registered</font></h2>
 							</section>
 
 						<!-- Contact -->

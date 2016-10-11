@@ -48,6 +48,8 @@ function init() {
             document.location.href = "chair.html";
         } else if (email == "staff@dsamun.com") {
             document.location.href = "staff.html";
+        } else if (email == "director@dsamun.com") {
+        	document.location.href = "director.html";
         }
     });
 }
