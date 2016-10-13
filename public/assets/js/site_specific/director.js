@@ -386,7 +386,7 @@ function changeChild(name, index, id, listName) {
 }
 
 function removeChild(index, listName) {
-	document.getElementById(listName).remove(index);
+	document.getElementById(listName).remove(index); 
 }
 
 //listen for changes to the children of "reference" and update "resList" accordingly

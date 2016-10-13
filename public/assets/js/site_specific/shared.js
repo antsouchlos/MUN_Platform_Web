@@ -81,7 +81,7 @@ function getTopic(txt) {
 }
 
 //takes the value of a select-option (form: "Resolution [id]: [topic]/[name]") as an argument and returns the id
-function getId(txt) {
+/*function getId(txt) {
     var result = "";
     
    	var writing = false;
@@ -99,7 +99,7 @@ function getId(txt) {
     }
 
     return parseInt(result);
-}
+}*/
 
 function getDateAndTime() {
     var currentDate = new Date();
