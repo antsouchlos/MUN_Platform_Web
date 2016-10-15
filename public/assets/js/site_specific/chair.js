@@ -130,10 +130,10 @@ function removeChild(id, listName) {
 
 function listen() {
 	firebase.database().ref().child("order").on("child_added", function(snapshot) {
-		firebase.database().ref().child("committees").once("value", function(snapshot2) {
+		var id = parseInt(snapshot.key);
+		
+		firebase.database().ref().child("committees").child(id.toString()).once("value", function(snapshot2) {
 			if (snapshot2.val() == currentCommittee) {
-				var id = parseInt(snapshot.key);
-
 				if (snapshot.val() <= 2) {
 					addChild("D" + formatNum(id), id, "resList");
 				} else {
@@ -150,10 +150,10 @@ function listen() {
 	});
 	
 	firebase.database().ref().child("order").on("child_changed", function(snapshot) {
-		firebase.database().ref().child("committees").once("value", function(snapshot2) {
+		var id = parseInt(snapshot.key);
+		
+		firebase.database().ref().child("committees").child(id.toString()).once("value", function(snapshot2) {
 			if (snapshot2.val() == currentCommittee) {
-				var id = parseInt(snapshot.key);
-
 				if (snapshot.val() <= 2) {
 					changeChild("D" + formatNum(id), id, "resList");
 				} else {
@@ -165,7 +165,36 @@ function listen() {
 }
 
 function init() {
-	listen();
+    var fired = false;
+    firebase.auth().onAuthStateChanged(firebaseUser => {
+        if (!fired) {
+            fired = true;
+            
+            var studentOfficer = "Student officer";
+            var email = firebaseUser.email;
+            
+            if (email == "political@dsamun.com") {
+                document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
+                document.getElementById("committee_text").innerHTML = "Special Political and Decolonization Committee";
+                currentCommittee = "Special Political and Decolonization Committee";
+            } else if (email == "disarmament@dsamun.com") {
+                document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
+                document.getElementById("committee_text").innerHTML = "Disarmament and International Security Commitee";
+                currentCommittee = "Disarmament and International Security Commitee";
+            } else if (email == "humanitarian@dsamun.com") {
+                document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
+                document.getElementById("committee_text").innerHTML = "Social, Humanitarian and Cultural Committee";
+                currentCommittee = "Social, Humanitarian and Cultural Committee";
+            } else if (email == "environmental@dsamun.com") {
+                document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
+                document.getElementById("committee_text").innerHTML = "Environmental Committee";
+                currentCommittee = "Environmental Committee";
+            }
+
+            //listen for resolution uploads
+           	listen();
+        }
+    });
     
     //logout
     document.getElementById("logout_link").onclick = function() {
