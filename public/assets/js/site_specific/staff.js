@@ -309,9 +309,10 @@ function submit_debate(file) {
 								                function complete() {
 								                    //add the new resolution to the database
 								                    firebase.database().ref().child("metadata").child(id.toString()).child("debate").set(getDateAndTime());
-													firebase.database().ref().child("debate").child(id.toString()).set("passed");
+								                    firebase.database().ref().child("metadata").child(id.toString()).child("amendments").set(amendmentNum);
+								                    firebase.database().ref().child("metadata").child(id.toString()).child("dstatus").set("passed");
+													firebase.database().ref().child("debate").child(id.toString()).set(id);
 													firebase.database().ref().child("order").child(id.toString()).set(4);
-													firebase.database().ref().child("amendments").child(id.toString()).set(amendmentNum);
 													firebase.database().ref().child("A_Number").child(id.toString()).remove();
 													//show the 'Resolution successfully uploaded' message
 								                    document.getElementById("resDebate_msg2").style.visibility = "visible";
@@ -337,8 +338,9 @@ function submit_debate(file) {
 			}
 		} else {
             //add the new resolution to the database
-            firebase.database().ref().child("metadata").child(id.toString()).child("debate").set(getDateAndTime());
-			firebase.database().ref().child("debate").child(id.toString()).set("failed");
+			firebase.database().ref().child("metadata").child(id.toString()).child("debate").set(getDateAndTime());
+			firebase.database().ref().child("metadata").child(id.toString()).child("dstatus").set("failed");
+			firebase.database().ref().child("debate").child(id.toString).set(id);
 			firebase.database().ref().child("order").child(id.toString()).set(4);
 			firebase.database().ref().child("A_Number").child(id.toString()).remove();
 			//show the 'Resolution successfully uploaded' message
@@ -446,11 +448,25 @@ function listenDebate(listName) {
 	});
 }
 
+function listenNewD() {
+	var label = document.getElementById("next_id_txt");
+	
+	firebase.database().ref().child("counter").on("value", function(snapshot) {
+		if (snapshot.exists()) {
+			label.innerHTML = formatNum(snapshot.val());
+		} else {
+			label.innerHTML = "001";
+		}
+	});
+}
+
 function startListeners() {
 	listenAPanel("resList_aPanel");
 	listenCorrection("resList_correction");
 	listenANumber("resList_aNumber");
 	listenDebate("resList_debate");
+	
+	listenNewD();
 }
 
 function init() {
