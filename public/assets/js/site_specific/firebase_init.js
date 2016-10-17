@@ -7,9 +7,9 @@
 };
 <<<<<<< HEAD
 firebase.initializeApp(config); */
-=======
-firebase.initializeApp(config);*/
->>>>>>> afbdfb5d744d16c1f558e204f150b502f14b66fc
+/*=======
+firebase.initializeApp(config);
+>>>>>>> afbdfb5d744d16c1f558e204f150b502f14b66fc*/
 
 //peppas
 var config = {
