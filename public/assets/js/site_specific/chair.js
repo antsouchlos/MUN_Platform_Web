@@ -34,7 +34,6 @@ function check() {
 		if (prevID != 0)
 			firebase.database().ref().child("metadata").child(prevID).off();
 		
-		var id_txt = document.getElementById("id_txt");
 		var registered_txt = document.getElementById("archived_txt");
 		var approval_txt = document.getElementById("approval_txt");
 		var correction_txt = document.getElementById("advisor_txt");
@@ -52,14 +51,6 @@ function check() {
 		var id = getId(list.options[selectedIndex].text);
 		prevID = id;
 		
-		firebase.database().ref().child("order").child(id.toString()).on("value", function(snapshot) {
-			if (snapshot.val() <= 2) {
-				id_txt.innerHTML = "D" + formatNum(id);
-			} else {
-				id_txt.innerHTML = "A" + formatNum(id);
-			}
-		});
-		
 		firebase.database().ref().child("metadata").child(id.toString()).on("child_added", function(snapshot) {
 			if (snapshot.key == "D") {
 				registered_txt.innerHTML = snapshot.val();
@@ -76,7 +67,13 @@ function check() {
 					amendments_txt.innerHTML = "";
 			} else if (snapshot.key == "amendments") {
 				amendments_txt.innerHTML = snapshot.val();
+			} else if (snapshot.key == "name") {
+				name_txt.innerHTML = snapshot.val();
 			}
+		});
+		
+		firebase.database().ref().child("topics").child(id.toString()).once("value", function (snapshot) {
+			topic_txt.innerHTML = snapshot.val();
 		});
 	} else {
 		//alert("An error occurred while checking for the status of a resolution");

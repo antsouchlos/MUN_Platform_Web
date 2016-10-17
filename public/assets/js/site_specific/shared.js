@@ -146,3 +146,16 @@ function formatNum(n) {
 	
 	return result;
 }
+
+var globalElementName = "";
+
+function hideFeedback() {
+	document.getElementById(globalElementName).style.visibility = "hidden";
+}
+
+function showFeedback(elementName) {
+	globalElementName = elementName;
+	document.getElementById(elementName).style.visibility = "visible";
+	
+	setTimeout(hideFeedback, 3000);
+}

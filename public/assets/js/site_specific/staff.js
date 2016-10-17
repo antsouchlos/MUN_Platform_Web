@@ -125,6 +125,7 @@ function register(file, committee, topic) {
 		                        //add the new resolution to the database
 		                        firebase.database().ref().child("resolutions").child(committee).child(topic).child(n.toString()).set(resName.value);
 		                        firebase.database().ref().child("metadata").child(n.toString()).child("D").set(getDateAndTime());
+		                        firebase.database().ref().child("metadata").child(n.toString()).child("name").set(resName.value);
 		                        firebase.database().ref().child("committees").child(n.toString()).set(committee);
 		                        firebase.database().ref().child("topics").child(n.toString()).set(topic);
 		    					firebase.database().ref().child("D").child(n.toString()).set(n);
@@ -134,7 +135,8 @@ function register(file, committee, topic) {
 		    					firebase.database().ref().child("counter").set(n+1);
 		    					
 		    					//show the 'Resolution successfully uploaded' message
-			                    document.getElementById("resRegistration_msg2").style.visibility = "visible";
+			                    //document.getElementById("resRegistration_msg2").style.visibility = "visible";
+		    					showFeedback("resRegistration_msg2");
 			                }
 			            );
 					});
@@ -170,9 +172,11 @@ function submit_APanel() {
 				firebase.database().ref().child("order").child(id.toString()).set(1);
                 firebase.database().ref().child("metadata").child(id.toString()).child("A_Panel").set(getDateAndTime());
 				
-				document.getElementById("resAPanel_msg2").style.visibility = "visible";
+				//document.getElementById("resAPanel_msg2").style.visibility = "visible";
+				showFeedback("resAPanel_msg2");
 			} else {
-				document.getElementById("resAPanel_msg").style.visibility = "visible";
+				//document.getElementById("resAPanel_msg").style.visibility = "visible";
+				showFeedback("resAPanel_msg");
 			}
 		});
 	} else {
@@ -198,9 +202,11 @@ function submit_correction() {
 				firebase.database().ref().child("order").child(id.toString()).set(2);
                 firebase.database().ref().child("metadata").child(id.toString()).child("correction").set(getDateAndTime());
 				
-				document.getElementById("resCorrection_msg2").style.visibility = "visible";
+				//document.getElementById("resCorrection_msg2").style.visibility = "visible";
+                showFeedback("resCorrection_msg2");
 			} else {
-				document.getElementById("resCorrection_msg").style.visibility = "visible";
+				//document.getElementById("resCorrection_msg").style.visibility = "visible";
+				showFeedback("resCorrection_msg");
 			}
 		});
 	} else {
@@ -244,7 +250,8 @@ function submit_ANumber(file) {
 											firebase.database().ref().child("correction").child(id.toString()).remove();
 						                    
 											//show the 'Resolution successfully uploaded' message
-						                    document.getElementById("resANumber_msg2").style.visibility = "visible";
+						                    //document.getElementById("resANumber_msg2").style.visibility = "visible";
+						                    showFeedback("resANumber_msg2");
 						                }
 						            );
 								} else {
@@ -256,7 +263,8 @@ function submit_ANumber(file) {
 						}
 					});
 				} else {
-					document.getElementById("resANumber_msg").style.visibility = "visible";
+					//document.getElementById("resANumber_msg").style.visibility = "visible";
+					showFeedback("resANumber_msg");
 				}
 			});
 		} else {
@@ -299,6 +307,7 @@ function submit_debate(file) {
 											var committee = snapshot2.val();
 											var topic = snapshot3.val();
 											
+											
 											//upload file
 								            var storageRef = firebase.storage().ref("Debate/" + committee + "/" + topic + "/" + formatNum(id));
 								            storageRef.put(file).on('state_changed',
@@ -315,7 +324,8 @@ function submit_debate(file) {
 													firebase.database().ref().child("order").child(id.toString()).set(4);
 													firebase.database().ref().child("A_Number").child(id.toString()).remove();
 													//show the 'Resolution successfully uploaded' message
-								                    document.getElementById("resDebate_msg2").style.visibility = "visible";
+								                    //document.getElementById("resDebate_msg2").style.visibility = "visible";
+								                    showFeedback("resDebate_msg2");
 								                }
 								            );
 										} else {
@@ -327,7 +337,8 @@ function submit_debate(file) {
 								}
 							});
 						} else {
-							document.getElementById("resDebate_msg").style.visibility = "visible";
+							//document.getElementById("resDebate_msg").style.visibility = "visible";
+							showFeedback("resDebate_msg");
 						}
 					});
 				} else {
@@ -340,11 +351,12 @@ function submit_debate(file) {
             //add the new resolution to the database
 			firebase.database().ref().child("metadata").child(id.toString()).child("debate").set(getDateAndTime());
 			firebase.database().ref().child("metadata").child(id.toString()).child("dstatus").set("failed");
-			firebase.database().ref().child("debate").child(id.toString).set(id);
+			firebase.database().ref().child("debate").child(id.toString()).set(id);
 			firebase.database().ref().child("order").child(id.toString()).set(4);
 			firebase.database().ref().child("A_Number").child(id.toString()).remove();
 			//show the 'Resolution successfully uploaded' message
-            document.getElementById("resDebate_msg2").style.visibility = "visible";
+            //document.getElementById("resDebate_msg2").style.visibility = "visible";
+            showFeedback("resDebate_msg2");
 		}
 	} else {
 		alert("You must choose a resolutionto register to give a debate-status to");
