@@ -1,271 +1,167 @@
 //global variables
-var resList_ids = [];
-
-var notRegistered = 0;
 var prevID = 0;
-var currentCommittee = null;
-var uploading = false;
+var ParaList = [];
+var checked = false;
+var currentCommittee;
 
-//gets called when the selected element of the "chek" select box changes
+//returns the id from the string of tue form "[Letter][id]"
+function getId(str) {
+	var result_str = "";
+	
+	var writing = false;
+	
+	for (i = 1; i < str.length; i++) {
+		
+		if (!writing) {
+			if (str.charAt(i) != '0') {
+				writing = true;
+				result_str += str.charAt(i);
+			}
+		} else {
+			result_str += str.charAt(i);
+		}
+	}
+	
+	return parseInt(result_str);
+}
+
 function check() {
-	document.getElementById("uploaded_txt").innerHTML = "";
-	document.getElementById("archived_txt").innerHTML = "";
-	document.getElementById("approval_txt").innerHTML = "";
-	document.getElementById("aNumber_txt").innerHTML = "";
-	document.getElementById("debate_txt").innerHTML = "";
-	document.getElementById("GA_txt").innerHTML = "";
+	var list = document.getElementById("resList");
 	
-    var resList = document.getElementById("resList");
-
-    if (resList.selectedIndex != -1) {
-    	var id = resList_ids[resList.selectedIndex];
-    	
-        var metaReference = firebase.database().ref().child("metadata").child(id);
-        
-        var uploadedRef = metaReference.child("uploaded");
-        var registeredRef = metaReference.child("registered");
-        var aPanelRef = metaReference.child("aPanel");
-        var aNumberRef = metaReference.child("aNumber");
-        var debateRef = metaReference.child("debate");
-        var gaRef = metaReference.child("ga");
-        
-        
-        //detach previous listeners
-        firebase.database().ref().child("metadata").child(prevID).child("id").off();
-        firebase.database().ref().child("metadata").child(prevID).child("uploaded").off();
-        firebase.database().ref().child("metadata").child(prevID).child("registered").off();
-        firebase.database().ref().child("metadata").child(prevID).child("aPanel").off();
-        firebase.database().ref().child("metadata").child(prevID).child("aNumber").off();
-        firebase.database().ref().child("metadata").child(prevID).child("ga").off();
-        
-        //ID
-        firebase.database().ref().child("metadata").child(id).child("id").on("value", function (snapshot) {
-        	if (snapshot.exists()) {
-            	document.getElementById("id_txt").innerHTML = snapshot.val().toString();
-            	firebase.database().ref().child("metadata").child(id).child("id").off();
-        	} else 
-        		document.getElementById("id_txt").innerHTML = "pending";
-        });
-        
-        //upload time
-        uploadedRef.on("value", function (snapshot) {
-        	if (snapshot.exists())
-        		document.getElementById("uploaded_txt").innerHTML = snapshot.val();
-        	else 
-        		document.getElementById("uploaded_txt").innerHTML = "pending";
-        });
-        
-        //archived time
-        registeredRef.on("value", function (snapshot) {
-        	if (snapshot.exists())
-        		document.getElementById("archived_txt").innerHTML = snapshot.val();
-        	else 
-        		document.getElementById("archived_txt").innerHTML = "pending";
-
-        });
-        
-        //approval time
-        aPanelRef.on("value", function (snapshot) {
-        	if (snapshot.exists())
-        		document.getElementById("approval_txt").innerHTML = snapshot.val();
-        	else 
-        		document.getElementById("approval_txt").innerHTML = "pending";
-        });
-        
-        //aNumber time
-        aNumberRef.on("value", function (snapshot) {
-        	if (snapshot.exists())
-        		document.getElementById("aNumber_txt").innerHTML = snapshot.val();
-        	else 
-        		document.getElementById("aNumber_txt").innerHTML = "pending";
-        });
-        
-        //debate status
-        debateRef.on("value", function(snapshot) {
-        	if (snapshot.exists())
-        		document.getElementById("debate_txt").innerHTML = snapshot.val();
-        	else 
-        		document.getElementById("debate_txt").innerHTML = "pending";
-        });
-        
-        //ga status
-        gaRef.on("value", function(snapshot) {
-        	if (snapshot.exists())
-        		document.getElementById("GA_txt").innerHTML = snapshot.val();
-        	else 
-        		document.getElementById("GA_txt").innerHTML = "pending";
-        });
-        
-        prevID = id;
-    } else {
-        //alert("You must choose a resolution to check");
-    }
+	var selectedIndex = list.selectedIndex;
+	
+	if (selectedIndex != -1) {
+		if (prevID != 0)
+			firebase.database().ref().child("metadata").child(prevID).off();
+		
+		var id_txt = document.getElementById("id_txt");
+		var registered_txt = document.getElementById("archived_txt");
+		var approval_txt = document.getElementById("approval_txt");
+		var correction_txt = document.getElementById("advisor_txt");
+		var ANumber_txt = document.getElementById("aNumber_txt");
+		var debate_txt = document.getElementById("debate_txt");
+		var amendments_txt = document.getElementById("amnd_txt");
+		
+		registered_txt.innerHTML = "pending";
+		approval_txt.innerHTML = "pending";
+		correction_txt.innerHTML = "pending";
+		ANumber_txt.innerHTML = "pending";
+		debate_txt.innerHTML = "pending";
+		amendments_txt.innerHTML = "pending";
+		
+		var id = getId(list.options[selectedIndex].text);
+		prevID = id;
+		
+		firebase.database().ref().child("order").child(id.toString()).on("value", function(snapshot) {
+			if (snapshot.val() <= 2) {
+				id_txt.innerHTML = "D" + formatNum(id);
+			} else {
+				id_txt.innerHTML = "A" + formatNum(id);
+			}
+		});
+		
+		firebase.database().ref().child("metadata").child(id.toString()).on("child_added", function(snapshot) {
+			if (snapshot.key == "D") {
+				registered_txt.innerHTML = snapshot.val();
+			} else if (snapshot.key == "A_Panel") {
+				approval_txt.innerHTML = snapshot.val();
+			} else if (snapshot.key == "correction") {
+				correction_txt.innerHTML = snapshot.val();
+			} else if (snapshot.key == "A_Number") {
+				ANumber_txt.innerHTML = snapshot.val();
+			} else if (snapshot.key == "dstatus") {
+				debate_txt.innerHTML = snapshot.val();
+				
+				if (snapshot.val() == "failed")
+					amendments_txt.innerHTML = "";
+			} else if (snapshot.key == "amendments") {
+				amendments_txt.innerHTML = snapshot.val();
+			}
+		});
+	} else {
+		//alert("An error occurred while checking for the status of a resolution");
+	}
 }
 
-function addChild(originalId, name, id, listName) {
+function locateLowerIndex(id, list) {
+	var result = -1;
+	
+	var running = true;
+	
+	for (i = id-1; i > 0 && running; i--) {
+		for (i2 = 0; i2 < list.length; i2++) {
+			if (list[i2] == i) {
+				result = i2;
+				running = false;
+				break;
+			}
+		}
+	}
+
+	return result;
+}
+
+function addChild(name, id, listName) {
     var list = document.getElementById(listName);
     var item = document.createElement("option");
     
-    if (id == -1) {
-    	item.text += "ID [not registered]";
-    	notRegistered++;
-    	id = 1 - notRegistered;
-    } else
-    	item.text += "ID " + id.toString();
+    item.text = name;
     
-    item.text +=  name;
-    list.add(item, id -1 + notRegistered);
-    
-    if (listName == "resList")
-    	resList_ids.splice(id -1 + notRegistered, 0, originalId);
-    	
+    list.add(item, locateLowerIndex(id, ParaList) +1);
+	ParaList.splice(locateLowerIndex(id, ParaList) +1, 0, id);
 }
 
-function changeChild(name, index, id, listName) {
-    var list = document.getElementById(listName);
-    var item = document.createElement("option");
-
-    if (id == -1) {
-    	item.text += "ID [not registered]";
-		id = 1 - notRegistered + index;
-    } else {
-    	item.text += "ID " + id.toString();
-    	notRegistered--;
-    }
-    	
-    item.text += " " + name;
-
-    list.remove(index);
-    list.add(item, id -1 + notRegistered);
-
-    if (listName = "resList") {
-    	//backup the item's value
-    	var originalId = resList_ids[index];
-    	
-    	//remove the item from the list
-    	resList_ids.splice(index, 1);
-    	
-    	//insert the item in the new position
-    	resList_ids.splice(id -1 + notRegistered, 0, originalId);
-    }
-}
-
-function removeChild(index, listName) {
-	document.getElementById(listName).remove(index);
-}
-
-//listen for changes to the children of "reference" and update "resList" accordingly
-function listen(reference, topic, listName) {
-    //add an item to list when a child is added to the database
-    reference.on("child_added", function(childSnapshot, prevChildKey) {
-        if (prevChildKey == null)
-            prevChildKey = "0";
-        
-        var id = -1;
-        
-        firebase.database().ref().child("metadata").child(parseInt(childSnapshot.key)).child("id").once("value", function(snapshot) {
-        	if (snapshot.exists())
-        		id = snapshot.val();
-        	
-            addChild(parseInt(childSnapshot.key), ": " + topic + '/' + childSnapshot.val(), id, listName);
-            
-            check();
-            
-            //attach a listener, so that the id gets updated in realtime if the resolution gets registered
-            if (id == -1) {
-            	firebase.database().ref().child("metadata").child(parseInt(childSnapshot.key)).child("id").on("value", function (innerSnapshot) {
-            		if (innerSnapshot.val() != null)
-            			changeChild(": " + topic + '/' + childSnapshot.val(), resList_ids.indexOf(parseInt(childSnapshot.key)), innerSnapshot.val(), "resList")
-            	});
-            }
-        });
-    });
-}
-
-function debateListen(listName) {
-	firebase.database().ref().child("A_Number").on("child_added", function(snapshot) {
-		firebase.database().ref().child("committees").child(snapshot.val()).once("value", function(innerSnapshot) {
-			if (innerSnapshot.val() == currentCommittee) {
-				addChild(snapshot.val(), "", parseInt(snapshot.key), listName);	
-			}
-		});
-	});
+function changeChild(name, id, listName) {
+	var list = document.getElementById(listName);
+	var item = document.createElement("option");
 	
-	var n = 0;
+	item.text = name;
 	
-	firebase.database().ref().child("A_Number").on("child_removed", function(snapshot) {
-			var list = document.getElementById(listName).options;
-			var optionList = [];
-			
-			for (i = 0; i < list.length; i++)
-				optionList.push(list[i].value);
-			
-			removeChild(optionList.indexOf("ID " + parseInt(snapshot.key)), listName);
-	});
-};
-
-function aNumDownloadListen(listName) {
-	firebase.database().ref().child("A_Number_Download").on("child_added", function(snapshot) {
-		firebase.database().ref().child("committees").child(snapshot.val()).once("value", function(innerSnapshot) {
-			if (innerSnapshot.val() == currentCommittee) {
-				addChild(snapshot.val(), "", parseInt(snapshot.key), listName);	
-			}
-		});
-	});
+	list.remove(locateLowerIndex(id, ParaList) +1);
+	list.add(item, locateLowerIndex(id, ParaList) +1);
 }
 
-function gaStatusListen(listName) {
-    firebase.database().ref().child("debate").on("child_added", function (snapshot) {
-    	firebase.database().ref().child("metadata").child(snapshot.val()).child("debate").once("value", function(innerSnapshot) {
-    		if (innerSnapshot.val() == "passed") {
-    			firebase.database().ref().child("committees").child(snapshot.val()).once("value", function(innerSnapshot2) {
-    				if (innerSnapshot2.val() == currentCommittee)
-    					addChild(snapshot.val(), "", parseInt(snapshot.key), listName);	
-    			});
-    		}
-    	});
-    });
-    
-    firebase.database().ref().child("debate").on("child_removed", function (snapshot) {
-		var list = document.getElementById(listName).options;
-		var optionList = [];
+function removeChild(id, listName) {
+	var list = document.getElementById(listName);
+	
+	list.remove(locateLowerIndex(id, ParaList) +1);
+	ParaList.splice(locateLowerIndex(id, ParaList) +1, 1);
+}
+
+function listen() {
+	firebase.database().ref().child("order").on("child_added", function(snapshot) {
+		var id = parseInt(snapshot.key);
 		
-		for (i = 0; i < list.length; i++)
-			optionList.push(list[i].value);
-		
-		removeChild(optionList.indexOf("ID " + parseInt(snapshot.key)), listName);
-    });
-}
-
-function gaDownloadListen(listName) {
-	firebase.database().ref().child("ga").on("child_added", function(snapshot) {
-		firebase.database().ref().child("metadata").child(snapshot.val()).child("ga").once("value", function(innerSnapshot) {
-			if (innerSnapshot.val() == "approved") {
-    			firebase.database().ref().child("committees").child(snapshot.val()).once("value", function(innerSnapshot2) {
-    				if (innerSnapshot2.val() == currentCommittee)
-    					addChild(snapshot.val(), "", parseInt(snapshot.key), listName);	
-    			});
+		firebase.database().ref().child("committees").child(id.toString()).once("value", function(snapshot2) {
+			if (snapshot2.val() == currentCommittee) {
+				if (snapshot.val() <= 2) {
+					addChild("D" + formatNum(id), id, "resList");
+				} else {
+					addChild("A" + formatNum(id), id, "resList");
+				}
+				
+				if (!checked) {
+					var resList = document.getElementById("resList");
+					resList.selectedIndex = 0;
+					check();
+				}
 			}
 		});
 	});
-}
-
-function startListeners(committee) {	
-    const resolutionRef = firebase.database().ref().child("resolutions").child(committee);
-    
-    var index = committee_array.indexOf(committee);
-    var topics = allTopics[index];
-    
-    for (i = 0; i < topics.length; i++)
-    	listen(resolutionRef.child(topics[i]), topics[i], "resList");
 	
-    debateListen("resList2");
-    
-    aNumDownloadListen("AnumList");
-    
-    gaStatusListen("resList3");
-    
-    gaDownloadListen("GaList");
+	firebase.database().ref().child("order").on("child_changed", function(snapshot) {
+		var id = parseInt(snapshot.key);
+		
+		firebase.database().ref().child("committees").child(id.toString()).once("value", function(snapshot2) {
+			if (snapshot2.val() == currentCommittee) {
+				if (snapshot.val() <= 2) {
+					changeChild("D" + formatNum(id), id, "resList");
+				} else {
+					changeChild("A" + formatNum(id), id, "resList");
+				}
+			}
+		});
+	});
 }
 
 function init() {
@@ -276,59 +172,27 @@ function init() {
             
             var studentOfficer = "Student officer";
             var email = firebaseUser.email;
-            var list = document.getElementById("topicView");
             
             if (email == "political@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Special Political and Decolonization Committee";
-                
-                for (i = 0; i < poliTopics.length; i++) {
-                	var option = document.createElement("option");
-                	option.text = poliTopics[i];
-                	list.add(option);
-                }
-                
-                currentCommittee = "political";
-                
+                currentCommittee = "Special Political and Decolonization Committee";
             } else if (email == "disarmament@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Disarmament and International Security Commitee";
-                
-                for (i = 0; i < disaTopics.length; i++) {
-                	var option = document.createElement("option");
-                	option.text = disaTopics[i];
-                	list.add(option);
-                }
-                
-                currentCommittee = "disarmament";
-                
+                currentCommittee = "Disarmament and International Security Commitee";
             } else if (email == "humanitarian@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Social, Humanitarian and Cultural Committee";
-                
-                for (i = 0; i < humaTopics.length; i++) {
-                	var option = document.createElement("option");
-                	option.text = humaTopics[i];
-                	list.add(option);
-                }
-                
-                currentCommittee = "humanitarian";
-                
+                currentCommittee = "Social, Humanitarian and Cultural Committee";
             } else if (email == "environmental@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Environmental Committee";
-                
-                for (i = 0; i < enviTopics.length; i++) {
-                	var option = document.createElement("option");
-                	option.text = enviTopics[i];
-                	list.add(option);
-                }
-                
-                currentCommittee = "environmental";
+                currentCommittee = "Environmental Committee";
             }
-        	
+
             //listen for resolution uploads
-            startListeners(currentCommittee);
+           	listen();
         }
     });
     

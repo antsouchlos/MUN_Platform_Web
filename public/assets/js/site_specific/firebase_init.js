@@ -5,7 +5,11 @@
     databaseURL: "https://dsamun-9b8bd.firebaseio.com",
     storageBucket: "dsamun-9b8bd.appspot.com",
 };
+<<<<<<< HEAD
 firebase.initializeApp(config); */
+=======
+firebase.initializeApp(config);*/
+>>>>>>> afbdfb5d744d16c1f558e204f150b502f14b66fc
 
 //peppas
 var config = {
