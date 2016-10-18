@@ -82,6 +82,24 @@ function changeCommittee() {
             	option.text = enviTopics[i];
             	topic_select.add(option);
             }
+		} else if (committee_txt == "SECURITY COUNCIL (SC)") {
+            for (i = 0; i < secuTopics.length; i++) {
+            	var option = document.createElement("option");
+            	option.text = secuTopics[i];
+            	topic_select.add(option);
+            }
+		} else if (committee_txt == "ECONOMIC AND SOCIAL COUNCIL (ECOSOC)") {
+            for (i = 0; i < ecoTopics.length; i++) {
+            	var option = document.createElement("option");
+            	option.text = ecoTopics[i];
+            	topic_select.add(option);
+            }
+		} else if (committee_txt == "SPECIAL CONFERENCE ON MODERN SLAVERY") {
+            for (i = 0; i < slaveTopics.length; i++) {
+            	var option = document.createElement("option");
+            	option.text = slaveTopics[i];
+            	topic_select.add(option);
+            }
 		}
 	} else {
 		//possibly show error message
@@ -500,6 +518,12 @@ function init() {
 			option.text = "Social, Humanitarian and Cultural Committee";
 		} else if (committee == "environmental") {
 			option.text = "Environmental Committee";
+		} else if (committee == "security") {
+			option.text = "SECURITY COUNCIL (SC)";
+		} else if (committee == "economic") {
+			option.text = "ECONOMIC AND SOCIAL COUNCIL (ECOSOC)";
+		} else if (committee == "slavery") {
+			option.text = "SPECIAL CONFERENCE ON MODERN SLAVERY";
 		}
 		
 		committee_select.add(option);

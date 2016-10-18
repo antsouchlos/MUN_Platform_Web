@@ -186,6 +186,18 @@ function init() {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "Environmental Committee";
                 currentCommittee = "Environmental Committee";
+            } else if (email == "security@dsamun.com") {
+                document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
+                document.getElementById("committee_text").innerHTML = "SECURITY COUNCIL (SC)";
+                currentCommittee = "SECURITY COUNCIL (SC)";
+            } else if (email == "economic@dsamun.com") {
+                document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
+                document.getElementById("committee_text").innerHTML = "ECONOMIC AND SOCIAL COUNCIL (ECOSOC)";
+                currentCommittee = "ECONOMIC AND SOCIAL COUNCIL (ECOSOC)";
+            } else if (email == "slavery@dsamun.com") {
+                document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
+                document.getElementById("committee_text").innerHTML = "SPECIAL CONFERENCE ON MODERN SLAVERY";
+                currentCommittee = "SPECIAL CONFERENCE ON MODERN SLAVERY";
             }
 
             //listen for resolution uploads

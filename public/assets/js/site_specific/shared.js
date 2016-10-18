@@ -3,10 +3,13 @@ var poliTopics = ["Eliminating the funding of ISIL via anti-money laundering str
 var disaTopics = ["Reestablishing the criteria under which a country engages into war (jus ad bellum) and the Laws of War (jus in bello)", "The issue of the denuclearization of the Korean peninsula", "Strengthening international cooperation to counteract terrorist action of ISIS"];
 var humaTopics = ["Combating social conflicts and the growing far right ideology in refugee - hosting countries", "Establishing global minimum working condition standards", "Tackling the issue of child marriage and child grooming"];
 var enviTopics = ["Bio application of nanomaterials and their consequences on human health and the environment", "Preventing the degradation of maritime environment due to off shore oil mining", "Finding long term solutions for waste management in LEDCs"];
+var secuTopics = ["The threat of the Taliban militia in the region of Afghanistan and Pakistan", "The question of an autonomous Kurdistan", "The situation in the Republic of Turkey"];
+var ecoTopics = ["Disrupting organized criminal networks through intelligence and financial investigations", "Countering migrant smuggling", "Integrating LEDCs into global trade", "Job creation and training in post-conflict countries", "The issue of an ageing population in MEDCs and its impact on economic prosperity"];
+var slaveTopics = ["Fighting the sexual exploitation of minors in pornography", "The issue of bonded labor", "Eliminating domestic servitude", "Eradicating the military use of children in war-torn areas", "Measures to foster emancipated former slaves"];
 
-var allTopics = [poliTopics, disaTopics, humaTopics, enviTopics];
+var allTopics = [poliTopics, disaTopics, humaTopics, enviTopics, secuTopics, ecoTopics, slaveTopics];
 
-var committee_array = ["political", "disarmament", "humanitarian", "environmental"];
+var committee_array = ["political", "disarmament", "humanitarian", "environmental", "security", "economic", "slavery"];
 
 //takes the the text of a select-option as an argument and returns only the relevant part for download (only the resolution name and topic - without the id)
 function getRelevant(itemValue) {
