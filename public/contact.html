@@ -8,6 +8,10 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+		<script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+        <script src="assets/js/site_specific/firebase_init.js"></script>
+        <script src="assets/js/site_specific/shared.js"></script>
+        <script src="assets/js/site_specific/contact.js"></script>
 	</head>
 	<body>
 
@@ -32,14 +36,14 @@
 										<form method="post" action="#">
 											<div class="row uniform">
 												<div class="6u 12u$(xsmall)">
-													<input type="text" name="demo-name" id="demo-name" value="" placeholder="Name" />
+													<input type="text" name="demo-name" id="name_elem" value="" placeholder="Name" />
 												</div>
 												<div class="6u$ 12u$(xsmall)">
-													<input type="email" name="demo-email" id="demo-email" value="" placeholder="Email" />
+													<input type="email" name="demo-email" id="email_elem" value="" placeholder="Email" />
 												</div>
 												<div class="12u$">
 													<div class="select-wrapper">
-														<select name="demo-category" id="demo-category">
+														<select name="demo-category" id="topic_elem">
 															<option value="">I want to:</option>
 															<option value="1">Report a problem</option>
 															<option value="1">Send feedback</option>
@@ -47,13 +51,14 @@
 													</div>
 												</div>
 												<div class="12u$">
-													<textarea name="demo-message" id="demo-message" placeholder="Enter your message" rows="6"></textarea>
+													<textarea name="demo-message" id="message_elem" placeholder="Enter your message" rows="6"></textarea>
 												</div>
 												<div class="12u$">
 													<ul class="actions">
-														<li><input type="submit" value="Send Message" class="special" /></li>
-														<li><input type="reset" value="Reset" /></li>
+														<li><input type="submit" value="Send Message" class="special" id="send_btn"/></li>
+														<li><input type="reset" value="Reset" id="reset_btn"/></li>
 													</ul>
+													<h2 id="sent_msg2" style="text-align:center"><font color="green">Message sent</font></h2>
 												</div>
 											</div>
 										</form>
