@@ -19,5 +19,3 @@ var config = {
     storageBucket: "dsa-mun-platform.appspot.com",
 };
 firebase.initializeApp(config);
-
-    

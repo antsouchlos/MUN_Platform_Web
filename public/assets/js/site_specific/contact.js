@@ -28,6 +28,7 @@ function send() {
 						firebase.database().ref().child("messages").child(counter.toString()).child("d_t").set(getDateAndTime());
 						firebase.database().ref().child("messages").child(counter.toString()).child("name").set(name_elem.value);
 						firebase.database().ref().child("messages").child(counter.toString()).child("email").set(email_elem.value);
+						firebase.database().ref().child("messages").child(counter.toString()).child("topic").set(topic_elem.options[selectedIndex].text);
 						firebase.database().ref().child("messages").child(counter.toString()).child("message").set(message_elem.value);
 						
 						firebase.database().ref().child("messages_counter").set(counter + 1);
