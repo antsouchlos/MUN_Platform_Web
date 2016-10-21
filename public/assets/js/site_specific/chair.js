@@ -190,11 +190,11 @@ function init() {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "SECURITY COUNCIL (SC)";
                 currentCommittee = "SECURITY COUNCIL (SC)";
-            } else if (email == "economic@dsamun.com") {
+            } else if (email == "ecosoc@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "ECONOMIC AND SOCIAL COUNCIL (ECOSOC)";
                 currentCommittee = "ECONOMIC AND SOCIAL COUNCIL (ECOSOC)";
-            } else if (email == "slavery@dsamun.com") {
+            } else if (email == "special@dsamun.com") {
                 document.getElementById("studentOfficer_text").innerHTML = studentOfficer;
                 document.getElementById("committee_text").innerHTML = "SPECIAL CONFERENCE ON MODERN SLAVERY";
                 currentCommittee = "SPECIAL CONFERENCE ON MODERN SLAVERY";
